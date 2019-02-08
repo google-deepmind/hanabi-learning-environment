@@ -4,6 +4,7 @@ hanabi\_learning\_environment is a research platform for Hanabi experiments. The
 
 ### Getting started
 ```
+sudo apt-get install g++         # if you don't already have a CXX compiler
 sudo apt-get install cmake       # if you don't already have CMake
 sudo apt-get install python-pip  # if you don't already have pip
 pip install cffi                 # if you don't already have cffi
