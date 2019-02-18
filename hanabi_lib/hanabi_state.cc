@@ -226,12 +226,18 @@ void HanabiState::ApplyMove(HanabiMove move) {
   HanabiHistoryItem history(move);
   history.player = cur_player_;
   switch (move.MoveType()) {
-    case HanabiMove::kDeal:
-      history.deal_to_player = PlayerToDeal();
-      hands_[history.deal_to_player].AddCard(
-          deck_.DealCard(move.Color(), move.Rank()),
-          HanabiHand::CardKnowledge(ParentGame()->NumColors(),
-                                    ParentGame()->NumRanks()));
+    case HanabiMove::kDeal: {
+        history.deal_to_player = PlayerToDeal();
+        HanabiHand::CardKnowledge card_knowledge(ParentGame()->NumColors(),
+                                      ParentGame()->NumRanks());
+        if (parent_game_->ObservationType() == HanabiGame::kSeer){
+          card_knowledge.ApplyIsColorHint(move.Color());
+          card_knowledge.ApplyIsRankHint(move.Rank());
+        }
+        hands_[history.deal_to_player].AddCard(
+            deck_.DealCard(move.Color(), move.Rank()),
+            card_knowledge);
+      }
       break;
     case HanabiMove::kDiscard:
       history.information_token = IncrementInformationTokens();

@@ -660,10 +660,13 @@ class AgentObservationType(enum.IntEnum):
   include any memory of past RevalColor/RevealRank hints. A CardKnowledge
   observation includes per-card knowledge of past hints, as well as simple
   inferred knowledge of the form "this card is not red, because it was
-  not revealed as red in a past <RevealColor Red> move.
+  not revealed as red in a past <RevealColor Red> move. A Seer observation
+  shows all cards, including the player's own cards, regardless of what
+  hints have been given.
   """
   MINIMAL = 0
   CARD_KNOWLEDGE = 1
+  SEER = 2
 
 
 class HanabiGame(object):
