@@ -1,7 +1,9 @@
 import argparse, os, re, pickle
+import matplotlib.pyplot as plt
 
 def main(args):
 
+    # Find the latest log file in the directory and load into `data`
     log_dir = args.log_dir
 
     files_in_dir = os.listdir(log_dir)
@@ -13,12 +15,12 @@ def main(args):
     matches.sort(key = lambda x : -x[0])    # Reverse sort
 
     latest_logfile = matches[0][1]
-
     with open(os.path.join(log_dir, latest_logfile), 'rb') as f:
         data = pickle.load(f)
     
     iter_keys = data.keys()
 
+    # Will hold the iteration number and the average return on training episodes
     iterations = []
     av_returns = []
 
@@ -31,7 +33,13 @@ def main(args):
         iterations.append(i)
         av_returns.append(av_return)
 
-    print(list(zip(iterations, av_returns)))
+    ax = plt.axes()
+    ax.plot(iterations, av_returns)
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("Average training return")
+    plt.savefig("training_performance.png")
+    
+
 
 if __name__ == '__main__':
 
