@@ -12,3 +12,7 @@ make
 python rl_env_example.py         # Runs RL episodes
 python game_example.py           # Plays a game using the lower level interface
 ```
+
+# Performance Logs
+
+See [here](./performance_logs/README.md).
