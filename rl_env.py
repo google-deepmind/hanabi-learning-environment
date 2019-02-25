@@ -94,7 +94,7 @@ class HanabiEnv(Environment):
           - hand_size: int, Hand size \in [4,5].
           - max_information_tokens: int, Number of information tokens (>=0).
           - max_life_tokens: int, Number of life tokens (>=1).
-          - agent-observation-type: int.
+          - observation_type: int.
             0: Minimal observation.
             1: First-order common knowledge observation.
           - seed: int, Random seed.
@@ -533,8 +533,8 @@ def make(environment_name="Hanabi-Full", num_players=2, pyhanabi_path=None):
                 8,
             "max_life_tokens":
                 3,
-            "agent-observation-type":
-                pyhanabi.AgentObservationType.CARD_KNOWLEDGE
+            "observation_type":
+                pyhanabi.AgentObservationType.CARD_KNOWLEDGE.value
         })
   elif environment_name == "Hanabi-Full-Minimal":
     return HanabiEnv(
@@ -544,7 +544,7 @@ def make(environment_name="Hanabi-Full", num_players=2, pyhanabi_path=None):
             "players": num_players,
             "max_information_tokens": 8,
             "max_life_tokens": 3,
-            "agent-observation-type": pyhanabi.AgentObservationType.MINIMAL
+            "observation_type": pyhanabi.AgentObservationType.MINIMAL.value
         })
   elif environment_name == "Hanabi-Small":
     return HanabiEnv(
@@ -561,8 +561,8 @@ def make(environment_name="Hanabi-Full", num_players=2, pyhanabi_path=None):
                 3,
             "max_life_tokens":
                 1,
-            "agent-observation-type":
-                pyhanabi.AgentObservationType.CARD_KNOWLEDGE
+            "observation_type":
+                pyhanabi.AgentObservationType.CARD_KNOWLEDGE.value
         })
   elif environment_name == "Hanabi-Very-Small":
     return HanabiEnv(
@@ -579,8 +579,8 @@ def make(environment_name="Hanabi-Full", num_players=2, pyhanabi_path=None):
                 3,
             "max_life_tokens":
                 1,
-            "agent-observation-type":
-                pyhanabi.AgentObservationType.CARD_KNOWLEDGE
+            "observation_type":
+                pyhanabi.AgentObservationType.CARD_KNOWLEDGE.value
         })
   else:
     raise ValueError("Unknown environment {}".format(environment_name))
