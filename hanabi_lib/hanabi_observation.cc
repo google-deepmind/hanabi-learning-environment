@@ -32,13 +32,14 @@ int PlayerToOffset(int pid, int observer_pid, int num_players) {
 // Switch members from absolute player indices to observer-relative offsets,
 // including player indices within the contained HanabiMove.
 void ChangeHistoryItemToObserverRelative(int observer_pid, int num_players,
+                                         bool show_cards,
                                          HanabiHistoryItem* item) {
   if (item->move.MoveType() == HanabiMove::kDeal) {
     assert(item->player < 0 && item->deal_to_player >= 0);
     item->deal_to_player =
         (item->deal_to_player - observer_pid + num_players) % num_players;
-    if (item->deal_to_player == 0) {
-      // Hide cards dealt to observer.
+    if (item->deal_to_player == 0 && !show_cards) {
+      // Hide cards dealt to observer if they shouldn't be able to see them.
       item->move = HanabiMove(HanabiMove::kDeal, -1, -1, -1, -1);
     }
   } else {
@@ -64,8 +65,9 @@ HanabiObservation::HanabiObservation(const HanabiState& state,
   hands_.reserve(state.Hands().size());
   const bool hide_knowledge =
       state.ParentGame()->ObservationType() == HanabiGame::kMinimal;
+  const bool show_cards = state.ParentGame()->ObservationType() == HanabiGame::kSeer;
   hands_.push_back(
-      HanabiHand(state.Hands()[observing_player], true, hide_knowledge));
+      HanabiHand(state.Hands()[observing_player], !show_cards, hide_knowledge));
   for (int offset = 1; offset < state.ParentGame()->NumPlayers(); ++offset) {
     hands_.push_back(HanabiHand(state.Hands()[(observing_player + offset) %
                                               state.ParentGame()->NumPlayers()],
@@ -82,6 +84,7 @@ HanabiObservation::HanabiObservation(const HanabiState& state,
     last_moves_.push_back(*it);
     ChangeHistoryItemToObserverRelative(observing_player,
                                         state.ParentGame()->NumPlayers(),
+                                        show_cards,
                                         &last_moves_.back());
     if (it->player == observing_player) {
       break;

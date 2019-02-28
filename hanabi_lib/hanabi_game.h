@@ -33,8 +33,10 @@ class HanabiGame {
   // include any memory of past RevalColor/RevealRank hints. A CardKnowledge
   // observation includes per-card knowledge of past hints, as well as simple
   // inferred knowledge of the form "this card is not red, because it was
-  // not revealed as red in a past <RevealColor Red> move".
-  enum AgentObservationType { kMinimal = 0, kCardKnowledge = 1 };
+  // not revealed as red in a past <RevealColor Red> move". A Seer observation
+  // shows all cards, including the player's own cards, regardless of what
+  // hints have been given.
+  enum AgentObservationType { kMinimal = 0, kCardKnowledge = 1, kSeer = 2 };
 
   explicit HanabiGame(
       const std::unordered_map<std::string, std::string>& params);
