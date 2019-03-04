@@ -71,12 +71,12 @@ int CardValid(pyhanabi_card_t* card);
 
 /* CardKnowledge functions */
 char* CardKnowledgeToString(pyhanabi_card_knowledge_t* knowledge);
-int ColorWasHinted(pyhanabi_card_knowledge_t* knowledge);
+bool ColorWasHinted(pyhanabi_card_knowledge_t* knowledge);
 int KnownColor(pyhanabi_card_knowledge_t* knowledge);
-int KnownIsNotColor(pyhanabi_card_knowledge_t* knowledge, int color);
-int RankWasHinted(pyhanabi_card_knowledge_t* knowledge);
+bool ColorIsPlausible(pyhanabi_card_knowledge_t* knowledge, int color);
+bool RankWasHinted(pyhanabi_card_knowledge_t* knowledge);
 int KnownRank(pyhanabi_card_knowledge_t* knowledge);
-int KnownIsNotRank(pyhanabi_card_knowledge_t* knowledge, int rank);
+bool RankIsPlausible(pyhanabi_card_knowledge_t* knowledge, int rank);
 
 /* Move functions. */
 void DeleteMoveList(void* movelist);
