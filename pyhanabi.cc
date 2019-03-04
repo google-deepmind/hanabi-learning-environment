@@ -51,7 +51,7 @@ char* CardKnowledgeToString(pyhanabi_card_knowledge_t* knowledge) {
   return strdup(str.c_str());
 }
 
-int ColorWasHinted(pyhanabi_card_knowledge_t* knowledge) {
+bool ColorWasHinted(pyhanabi_card_knowledge_t* knowledge) {
   REQUIRE(knowledge != nullptr);
   REQUIRE(knowledge->knowledge != nullptr);
   return reinterpret_cast<
@@ -69,7 +69,7 @@ int KnownColor(pyhanabi_card_knowledge_t* knowledge) {
       ->Color();
 }
 
-int ColorIsPlausible(pyhanabi_card_knowledge_t* knowledge, int color) {
+bool ColorIsPlausible(pyhanabi_card_knowledge_t* knowledge, int color) {
   REQUIRE(knowledge != nullptr);
   REQUIRE(knowledge->knowledge != nullptr);
   return reinterpret_cast<
@@ -78,7 +78,7 @@ int ColorIsPlausible(pyhanabi_card_knowledge_t* knowledge, int color) {
       ->ColorPlausible(color);
 }
 
-int RankWasHinted(pyhanabi_card_knowledge_t* knowledge) {
+bool RankWasHinted(pyhanabi_card_knowledge_t* knowledge) {
   REQUIRE(knowledge != nullptr);
   REQUIRE(knowledge->knowledge != nullptr);
   return reinterpret_cast<
@@ -96,7 +96,7 @@ int KnownRank(pyhanabi_card_knowledge_t* knowledge) {
       ->Rank();
 }
 
-int RankIsPlausible(pyhanabi_card_knowledge_t* knowledge, int rank) {
+bool RankIsPlausible(pyhanabi_card_knowledge_t* knowledge, int rank) {
   REQUIRE(knowledge != nullptr);
   REQUIRE(knowledge->knowledge != nullptr);
   return reinterpret_cast<

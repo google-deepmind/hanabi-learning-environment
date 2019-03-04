@@ -427,7 +427,16 @@ class HanabiEnv(Environment):
           hint_d["color"] = pyhanabi.color_idx_to_char(hint.color())
         else:
           hint_d["color"] = None
+        hint_d["plausible_colors"] = [
+            pyhanabi.color_idx_to_char(color)
+            for color in range(self.game.num_colors())
+            if hint.color_plausible(color)
+        ]
         hint_d["rank"] = hint.rank()
+        hint_d["plausible_ranks"] = [
+            rank for rank in range(self.game.num_ranks())
+            if hint.rank_plausible(rank)
+        ]
         player_hints_as_dicts.append(hint_d)
       obs_dict["card_knowledge"].append(player_hints_as_dicts)
 
