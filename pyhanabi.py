@@ -22,7 +22,7 @@ import sys
 DEFAULT_CDEF_PREFIXES = (None, ".", os.path.dirname(__file__), "/include")
 DEFAULT_LIB_PREFIXES = (None, ".", os.path.dirname(__file__), "/lib")
 PYHANABI_HEADER = "pyhanabi.h"
-PYHANABI_LIB = "libpyhanabi.so"
+PYHANABI_LIB = ["libpyhanabi.so", "libpyhanabi.dylib"]
 COLOR_CHAR = ["R", "Y", "G", "W", "B"]  # consistent with hanabi_lib/util.cc
 CHANCE_PLAYER_ID = -1
 
@@ -74,7 +74,7 @@ def try_cdef(header=PYHANABI_HEADER, prefixes=DEFAULT_CDEF_PREFIXES):
   return False
 
 
-def try_load(library=PYHANABI_LIB, prefixes=DEFAULT_LIB_PREFIXES):
+def try_load(library=None, prefixes=DEFAULT_LIB_PREFIXES):
   """Try loading library. Must be called before any pyhanabi calls.
 
   Args:
@@ -86,14 +86,21 @@ def try_load(library=PYHANABI_LIB, prefixes=DEFAULT_LIB_PREFIXES):
   global lib_loaded_flag
   global lib
   if lib_loaded_flag: return True
+  if library is None:
+    libnames = PYHANABI_LIB
+  elif type(library) in (list, tuple):
+    libnames = library
+  else:
+    libnames = (library,)
   for prefix in prefixes:
-    try:
-      lib_file = library if prefix is None else prefix + "/" + library
-      lib = ffi.dlopen(lib_file)
-      lib_loaded_flag = True
-      return True
-    except OSError:
-      pass
+    for libname in libnames:
+      try:
+        lib_file = libname if prefix is None else prefix + "/" + libname
+        lib = ffi.dlopen(lib_file)
+        lib_loaded_flag = True
+        return True
+      except OSError:
+        pass
   return False
 
 

@@ -514,10 +514,9 @@ def make(environment_name="Hanabi-Full", num_players=2, pyhanabi_path=None):
   """
 
   if pyhanabi_path is not None:
-    assert pyhanabi.try_cdef("pyhanabi.h",
-                             (pyhanabi_path,)), "cdef failed to load"
-    assert pyhanabi.try_load("libpyhanabi.so",
-                             (pyhanabi_path,)), "library failed to load"
+    prefixes=(pyhanabi_path,)
+    assert pyhanabi.try_cdef(prefixes=prefixes), "cdef failed to load"
+    assert pyhanabi.try_load(prefixes=prefixes), "library failed to load"
 
   if (environment_name == "Hanabi-Full" or
       environment_name == "Hanabi-Full-CardKnowledge"):
