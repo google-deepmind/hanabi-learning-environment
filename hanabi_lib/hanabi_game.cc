@@ -100,8 +100,7 @@ int HanabiGame::GetChanceOutcomeUid(HanabiMove move) const {
   if (move.MoveType() != HanabiMove::kDeal) {
     return -1;
   }
-  return (move.TargetOffset() * NumColors() + move.Color()) * NumRanks() +
-         move.Rank();
+  return move.Color() * NumRanks() + move.Rank();
 }
 
 HanabiMove HanabiGame::PickRandomChance(
