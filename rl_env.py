@@ -27,7 +27,7 @@ MOVE_TYPES = [_.name for _ in pyhanabi.HanabiMoveType]
 
 
 class Environment(object):
-  """Abtract Environment interface.
+  """Abstract Environment interface.
 
   All concrete implementations of an environment should derive from this
   interface and implement the method stubs.
