@@ -749,7 +749,7 @@ class HanabiGame(object):
 
     The number of cards in a player's hand may be smaller than this maximum
     a) at the beginning of the game before cards are dealt out, b) after
-    ane Play or Discard action and before the subsequent deal event, and c)
+    any Play or Discard action and before the subsequent deal event, and c)
     after the deck is empty and cards can no longer be dealt to a player.
     """
     return lib.HandSize(self._game)
