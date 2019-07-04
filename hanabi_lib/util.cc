@@ -19,8 +19,8 @@
 namespace hanabi_learning_env {
 
 char ColorIndexToChar(int color) {
-  if (color >= 0 && color <= kMaxNumColors) {
-    return "RYGWB"[color];
+  if (color >= 0) {
+    return "RYGWBA"[color];
   } else {
     return 'X';
   }

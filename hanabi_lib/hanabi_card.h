@@ -21,17 +21,19 @@ namespace hanabi_learning_env {
 
 class HanabiCard {
  public:
-  HanabiCard(int color, int rank) : color_(color), rank_(rank) {}
+  HanabiCard(int color, int rank, bool isRainbow) : color_(color), rank_(rank), isRainbow(isRainbow) {}
   HanabiCard() = default;  // Create an invalid card.
   bool operator==(const HanabiCard& other_card) const;
   bool IsValid() const { return color_ >= 0 && rank_ >= 0; }
   std::string ToString() const;
   int Color() const { return color_; }
   int Rank() const { return rank_; }
+  bool IsRainbow() const { return isRainbow; }
 
  private:
   int color_ = -1;  // 0 indexed card color.
   int rank_ = -1;   // 0 indexed card rank.
+  bool isRainbow = false;
 };
 
 }  // namespace hanabi_learning_env

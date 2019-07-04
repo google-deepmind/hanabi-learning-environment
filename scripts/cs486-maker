@@ -1,0 +1,18 @@
+#bin/bash
+
+maker_function() {
+    cd ~/"cs486-project-hanabi/"
+    git pull
+    cmake .
+    make
+    python $1 > $2
+    #xdg-open $2
+    code $2
+    
+}
+
+if [ $# -eq 2 ]; then
+  maker_function $1 $2
+else
+  echo "cs486-maker <python.py> <output.txt>"
+fi

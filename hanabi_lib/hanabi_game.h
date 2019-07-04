@@ -76,6 +76,7 @@ class HanabiGame {
   int MaxLifeTokens() const { return max_life_tokens_; }
   int CardsPerColor() const { return cards_per_color_; }
   int MaxDeckSize() const { return cards_per_color_ * num_colors_; }
+  bool HasRainbowCards() const { return hasRainbowCards; }
   int NumberCardInstances(int color, int rank) const;
   int NumberCardInstances(HanabiCard card) const {
     return NumberCardInstances(card.Color(), card.Rank());
@@ -110,6 +111,7 @@ class HanabiGame {
   int cards_per_color_ = -1;
   int seed_ = -1;
   bool random_start_player_ = false;
+  bool hasRainbowCards = false;
   AgentObservationType observation_type_ = kCardKnowledge;
   mutable std::mt19937 rng_;
 };

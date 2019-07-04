@@ -53,7 +53,9 @@ uint8_t HandRankBitmask(const HanabiHand& hand, int rank) {
 HanabiState::HanabiDeck::HanabiDeck(const HanabiGame& game)
     : card_count_(game.NumColors() * game.NumRanks(), 0),
       total_count_(0),
-      num_ranks_(game.NumRanks()) {
+      num_ranks_(game.NumRanks()),
+      numColors(game.NumColors()),
+      hasRainbowCards(game.HasRainbowCards()) {
   for (int color = 0; color < game.NumColors(); ++color) {
     for (int rank = 0; rank < game.NumRanks(); ++rank) {
       auto count = game.NumberCardInstances(color, rank);
@@ -73,7 +75,14 @@ HanabiCard HanabiState::HanabiDeck::DealCard(std::mt19937* rng) {
   assert(card_count_[index] > 0);
   --card_count_[index];
   --total_count_;
-  return HanabiCard(IndexToColor(index), IndexToRank(index));
+  int cardColor = IndexToColor(index);
+  bool isRainbowCard = false;
+  if (this->hasRainbowCards) {
+    int rainbowIndex = this->numColors - 1;
+    isRainbowCard = cardColor == rainbowIndex;
+  }
+
+  return HanabiCard(cardColor, IndexToRank(index), isRainbowCard);
 }
 
 HanabiCard HanabiState::HanabiDeck::DealCard(int color, int rank) {
@@ -84,7 +93,14 @@ HanabiCard HanabiState::HanabiDeck::DealCard(int color, int rank) {
   assert(card_count_[index] > 0);
   --card_count_[index];
   --total_count_;
-  return HanabiCard(IndexToColor(index), IndexToRank(index));
+  int cardColor = IndexToColor(index);
+  bool isRainbowCard = false;
+  if (this->hasRainbowCards) {
+    int rainbowIndex = this->numColors - 1;
+    isRainbowCard = cardColor == rainbowIndex;
+  }
+
+  return HanabiCard(cardColor, IndexToRank(index), isRainbowCard);
 }
 
 HanabiState::HanabiState(const HanabiGame* parent_game, int start_player)
@@ -193,7 +209,7 @@ bool HanabiState::MoveIsLegal(HanabiMove move) const {
       const auto& cards = HandByOffset(move.TargetOffset()).Cards();
       if (!std::any_of(cards.begin(), cards.end(),
                        [move](const HanabiCard& card) {
-                         return card.Color() == move.Color();
+                         return card.Color() == move.Color() || card.IsRainbow();
                        })) {
         return false;
       }

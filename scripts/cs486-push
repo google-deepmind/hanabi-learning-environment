@@ -1,0 +1,11 @@
+#bin/bash
+
+push_function() {
+    cd ~/"cs486-project-hanabi/"
+    git add --all
+    git commit -m "Auto Push"
+    git push
+}
+
+push_function
+

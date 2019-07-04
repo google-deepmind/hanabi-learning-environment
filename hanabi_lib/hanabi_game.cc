@@ -16,6 +16,9 @@
 
 #include "util.h"
 
+#include <iostream>
+
+
 namespace hanabi_learning_env {
 
 namespace {
@@ -49,6 +52,12 @@ HanabiGame::HanabiGame(
     seed_ = std::random_device()();
   }
   rng_.seed(seed_);
+  hasRainbowCards = ParameterValue<bool>(params_, "rainbow", false);
+
+  if (hasRainbowCards) {
+    num_colors_++;
+    std::cout << "RAINBOW CARDS ACTIVATED" << std::endl;
+  }
 
   // Work out number of cards per color, and check deck size is large enough.
   cards_per_color_ = 0;
@@ -64,6 +73,9 @@ HanabiGame::HanabiGame(
   for (int uid = 0; uid < MaxChanceOutcomes(); ++uid) {
     chance_outcomes_.push_back(ConstructChanceOutcome(uid));
   }
+
+  
+
 }
 
 int HanabiGame::MaxMoves() const {
@@ -120,7 +132,9 @@ std::unordered_map<std::string, std::string> HanabiGame::Parameters() const {
           {"max_life_tokens", std::to_string(MaxLifeTokens())},
           {"seed", std::to_string(seed_)},
           {"random_start_player", random_start_player_ ? "true" : "false"},
-          {"observation_type", std::to_string(observation_type_)}};
+          {"observation_type", std::to_string(observation_type_)},
+          {"has_rainbow_cards", std::to_string(hasRainbowCards)}
+          };
 }
 
 int HanabiGame::NumberCardInstances(int color, int rank) const {

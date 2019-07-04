@@ -23,7 +23,7 @@ DEFAULT_CDEF_PREFIXES = (None, ".", os.path.dirname(__file__), "/include")
 DEFAULT_LIB_PREFIXES = (None, ".", os.path.dirname(__file__), "/lib")
 PYHANABI_HEADER = "pyhanabi.h"
 PYHANABI_LIB = ["libpyhanabi.so", "libpyhanabi.dylib"]
-COLOR_CHAR = ["R", "Y", "G", "W", "B"]  # consistent with hanabi_lib/util.cc
+COLOR_CHAR = ["R", "Y", "G", "W", "B", "A"]  # consistent with hanabi_lib/util.cc
 CHANCE_PLAYER_ID = -1
 
 ffi = cffi.FFI()
