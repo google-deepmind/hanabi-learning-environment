@@ -20,8 +20,12 @@ import getopt
 import rl_env
 from agents.random_agent import RandomAgent
 from agents.simple_agent import SimpleAgent
+from agents.second_agent import SecondAgent
 
-AGENT_CLASSES = {'SimpleAgent': SimpleAgent, 'RandomAgent': RandomAgent}
+AGENT_CLASSES = {
+        'SimpleAgent': SimpleAgent,
+        'RandomAgent': RandomAgent,
+        'SecondAgent': SecondAgent}
 
 
 class Runner(object):
