@@ -414,7 +414,7 @@ class OutOfGraphReplayMemory(object):
       if attr.startswith('_'):
         continue
       filename = self._generate_filename(checkpoint_dir, attr, suffix)
-      with tf.gfile.Open(filename) as f:
+      with tf.gfile.Open(filename, 'rb') as f:
         with gzip.GzipFile(fileobj=f) as infile:
           if isinstance(self.__dict__[attr], np.ndarray):
             self.__dict__[attr] = np.load(infile, allow_pickle=False)
