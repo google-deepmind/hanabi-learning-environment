@@ -31,9 +31,9 @@ import random
 
 import gin.tf
 import numpy as np
-import replay_memory
 import tensorflow as tf
 
+from . import replay_memory
 
 slim = tf.contrib.slim
 

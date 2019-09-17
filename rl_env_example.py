@@ -15,9 +15,11 @@
 
 from __future__ import print_function
 
-import sys
 import getopt
-import rl_env
+import sys
+
+import hanabi_learning_environment.rl_env as rl_env
+
 from agents.random_agent import RandomAgent
 from agents.simple_agent import SimpleAgent
 

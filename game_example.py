@@ -17,7 +17,7 @@
 from __future__ import print_function
 
 import numpy as np
-import pyhanabi
+import hanabi_learning_environment.pyhanabi as pyhanabi
 
 
 def run_game(game_parameters):
