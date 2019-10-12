@@ -16,8 +16,8 @@
 from __future__ import absolute_import
 from __future__ import division
 
-import pyhanabi
-from pyhanabi import color_char_to_idx
+from hanabi_learning_environment import pyhanabi
+from hanabi_learning_environment.pyhanabi import color_char_to_idx
 
 MOVE_TYPES = [_.name for _ in pyhanabi.HanabiMoveType]
 

@@ -14,7 +14,7 @@
 """Random Agent."""
 
 import random
-from rl_env import Agent
+from hanabi_learning_environment.rl_env import Agent
 
 
 class RandomAgent(Agent):
