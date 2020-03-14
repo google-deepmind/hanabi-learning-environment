@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef __HANABI_PARALLEL_GAME_H__
-#define __HANABI_PARALLEL_GAME_H__
+#ifndef __HANABI_PARALLEL_ENV_H__
+#define __HANABI_PARALLEL_ENV_H__
 
 #include <random>
 #include <string>
@@ -27,9 +27,11 @@
 #include "hanabi_observation.h"
 #include "canonical_encoders.h"
 
+#include <iostream>
+
 namespace hanabi_learning_env {
 
-class HanabiParallelGame {
+class HanabiParallelEnv {
  public:
 
   /** \brief Struct for batched observations.
@@ -51,35 +53,61 @@ class HanabiParallelGame {
     std::array<int, 2> shape{0, 0}; // n_states x encoded_observation_length
   };
 
-  /** \brief Construct a game with several parallel states.
+  /** \brief Construct and environment with a single game with several parallel states.
    *  \param game_params Parameters of the game. See HanabiGame.
    *  \param n_states Number of parallel states.
    *  \param reset_state_on_game_end Whether the state should be automatically reset. Default true.
    */
-  explicit HanabiParallelGame(const std::unordered_map<std::string, std::string>& game_params,
+  explicit HanabiParallelEnv(const std::unordered_map<std::string, std::string>& game_params,
       const int n_states, const bool reset_state_on_game_end=true);
 
   /** \brief Make a step: apply moves to states and return observations for current players.
    *  \param batch_move Moves, one for each state.
    *  \return HanabiBatchObservation with all states.
    */
-  HanabiBatchObservation Step(const std::vector<HanabiMove>& batch_move);
+  HanabiBatchObservation ApplyBatchMove(
+      const std::vector<HanabiMove>& batch_move, const int agent_id);
   
   /** \overload with moves encoded as move ids.
    */
-  HanabiBatchObservation Step(const std::vector<int>& batch_move);
+  HanabiBatchObservation ApplyBatchMove(
+      const std::vector<int>& batch_move, const int agent_id);
 
-  HanabiBatchObservation ObservePlayer(const int player_idx);
+  HanabiBatchObservation ObserveAgent(const int agent_id);
 
-  /** \brief Get the HanabiGame game.
+  /** \brief Get a reference to the HanabiGame game.
    */
-  const HanabiGame& GetGame() {return game_;}
+  const HanabiGame& GetGame() const {return game_;}
+  // HanabiGame& GetGame() {return game_;}
+
+  /** \brief Get a pointer to the HanabiGame game.
+   */
+  HanabiGame* GetGamePtr() {return &game_;}
+  const HanabiGame* GetGamePtr() const {return &game_;}
+
+  /** \brief Get shape of a single encoded observation.
+   */
+  std::vector<int> GetObservationShape() const {return observation_encoder_.Shape();};
+
+  /** \brief Get length of a single flattened encoded observation.
+   */
+  int GetObservationFlatLength() const;
+
+  /** \brief Number of parallel states in this environment.
+   */
+  int GetNumStates() const {return parallel_states_.size();};
+
+  /** \brief Number of possible moves for this a game in this environment.
+   */
+  int MaxMoves() const {return game_.MaxMoves();}
 
   /** \brief Check for states that are terminal and create new ones instead of those.
    *  This function is called after each Step if reset_state_on_game_end_ is set to true. Otherwise
    *  user is responsible for dealing with terminal states.
+   *
+   *  \param agent_id Id of the agent which made the last move.
    */
-  void ResetFinishedStates();
+  void ResetFinishedStates(const int agent_id);
 
  private:
   /** \brief Create a new state and deal the cards.
@@ -87,13 +115,13 @@ class HanabiParallelGame {
   HanabiState NewState();
 
   HanabiGame game_;
-  std::vector<std::vector<HanabiObservation>> observations_;
-  std::vector<HanabiState> parallel_states_;
-  std::vector<std::vector<int>> agent_player_mapping_;
+  std::vector<std::vector<HanabiObservation>> observations_; //< List of state observations for each player
+  std::vector<HanabiState> parallel_states_;                 //< List with game states.
+  std::vector<std::vector<int>> agent_player_mapping_;       //< List of players associated with each agent.
   CanonicalObservationEncoder observation_encoder_;
   bool reset_state_on_game_end_ = true;
 };
 
 }  // namespace hanabi_learning_env
 
-#endif
+#endif // __HANABI_PARALLEL_ENV_H__

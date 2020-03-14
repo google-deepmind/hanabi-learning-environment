@@ -18,6 +18,7 @@ import re
 import cffi
 import enum
 import sys
+import numpy as np
 
 DEFAULT_CDEF_PREFIXES = (None, ".", os.path.dirname(__file__), "/include")
 DEFAULT_LIB_PREFIXES = (None, ".", os.path.dirname(__file__), "/lib")
@@ -783,6 +784,138 @@ class HanabiGame(object):
     lib.GetMoveByUid(self._game, move_uid, move)
     return HanabiMove(move)
 
+
+class HanabiParallelEnv(object):
+  """Parallel game states for a single instance of Hanabi.
+
+  Python wrapper of C++ HanabiParallelEnv class.
+  """
+  class ParentGame(HanabiGame):
+    """HanabiGame class for HanabiParallelEnv with C++ HanabiGame instance managed by HanabiParallelEnv.
+
+    Convenience class for retrieving HanabiGame stats.
+    For internal use only.
+    """
+    def __init__(self):
+      self._game = ffi.new("pyhanabi_game_t*")
+    def __del__(self):
+      self._game = None
+      del self
+
+  class HanabiBatchObservation(object):
+    """Batch observation for the HanabiParallelEnv.
+
+    Python wrapper for C batch observation container which facilitates access to it via numpy arrays.
+    Use following properties to access:
+     - batch_observation -- vectorized observation of shape (n states x vectorized observation length).
+     - legal_moves -- one-hot encoding of legal moves of shape (n states x max moves).
+     - rewards -- rewards for each state (n states).
+     - done -- indicates whether the states are terminal (n states). Note: always 0 if the
+                environment resets states automatically.
+
+    Do not instantiate it directly. Instead, use HanabiParallelEnv.last_observation.
+    """
+    def __init__(self, parallel_env):
+      self._observation = ffi.new("pyhanabi_batch_observation_t*")
+      lib.NewBatchObservation(self._observation, parallel_env)
+      self.n_states, self.obs_len, self.max_moves = (
+          self._observation.shape[0],
+          self._observation.shape[1],
+          lib.ParallelMaxMoves(parallel_env))
+      self.batch_observation = self._asarray(
+          self._observation.observation,
+          self.n_states * self.obs_len,
+          np.byte).reshape((self.n_states, self.obs_len))
+      self.legal_moves = self._asarray(
+          self._observation.legal_moves,
+          self.n_states * self.max_moves,
+          np.byte).reshape((self.n_states, self.max_moves))
+      self.done = self._asarray(self._observation.done, self.n_states, np.byte)
+      self.rewards = self._asarray(self._observation.reward, self.n_states, np.float64)
+
+    def _asarray(self, arr_ptr, arr_size, np_dtype):
+      """
+      Access cdata via numpy array.
+      """
+      value_t = ffi.getctype(ffi.typeof(arr_ptr).item)
+      return np.frombuffer(ffi.buffer(arr_ptr, arr_size * ffi.sizeof(value_t)), dtype=np_dtype)
+
+    def __del__(self):
+      if self._observation is not None:
+        lib.DeleteBatchObservation(self._observation)
+        self._observation = None
+      del self
+
+  def __init__(self, params=None, n_states=1, reset_state_on_terminal=True):
+    """Creates a HanabiParallelEnv object.
+
+    Args:
+      params: is a dictionary of parameters and their values.
+
+    Possible parameters include
+    "players": 2 <= number of players <= 5
+    "colors": 1 <= number of different card colors in deck <= 5
+    "rank": 1 <= number of different card ranks in deck <= 5
+    "hand_size": 1 <= number of cards in player hand
+    "max_information_tokens": 1 <= maximum (and initial) number of info tokens.
+    "max_life_tokens": 1 <= maximum (and initial) number of life tokens.
+    "seed": random number seed. -1 to use system random device to get seed.
+    "random_start_player": boolean. If true, start with random player, not 0.
+    "observation_type": int AgentObservationType.
+
+      n_states: number of states to create and maintain.
+      reset_state_on_terminal: whether a state should be automatically reset
+        when it reaches a terminal state.
+    """
+    if params is None:
+      raise ValueError("params cannot be None")
+    else:
+      param_list = []
+      for key in params:
+        param_list.append(ffi.new("char[]", key.encode('ascii')))
+        param_list.append(ffi.new("char[]", str(params[key]).encode('ascii')))
+      c_array = ffi.new("char * [" + str(len(param_list)) + "]", param_list)
+      self._parallel_env = ffi.new("pyhanabi_parallel_env_t*")
+      lib.NewParallelEnv(self._parallel_env,
+                         len(param_list),
+                         c_array,
+                         n_states,
+                         reset_state_on_terminal)
+      self.parent_game = HanabiParallelEnv.ParentGame()
+      lib.ParallelParentGame(self.parent_game._game, self._parallel_env)
+      self.last_observation = HanabiBatchObservation(self._parallel_env)
+
+  def new_initial_observation(self):
+    """
+    Writes an initial observation into self.last_observation
+    """
+    lib.ParallelObserveAgent(self.last_observation._observation, self._parallel_env, 0)
+
+  @property
+  def c_parallel_env(self):
+    """Return the C++ HanabiParallelEnv object."""
+    return self._parallel_env
+
+  def __del__(self):
+    if self.parent_game is not None:
+      del self.parent_game
+      self.parent_game = None
+    if self._parallel_env is not None:
+      lib.DeleteParallelEnv(self._parallel_env)
+      self._parallel_env = None
+    del self
+
+  def apply_batch_move(self, batch_move, agent_id):
+    """
+    Args:
+        batch_move -- 1D list with indices of selected moves (must be legal) of size (n states).
+        agent_id -- id of the agent performing the actions. It must be agent's turn.
+    """
+    lib.ParallelApplyBatchMove(self.last_observation._observation,
+                               self._parallel_env,
+                               len(batch_move),
+                               batch_move,
+                               agent_id)
 
 class HanabiObservation(object):
   """Player's observed view of an environment HanabiState.

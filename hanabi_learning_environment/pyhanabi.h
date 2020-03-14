@@ -53,10 +53,24 @@ typedef struct PyHanabiGame {
   void* game;
 } pyhanabi_game_t;
 
+typedef struct PyHanabiParallelEnv {
+  /* Points to a hanabi_learning_env::HanabiParallelEnv. */
+  void* parallel_env;
+} pyhanabi_parallel_env_t;
+
 typedef struct PyHanabiObservation {
   /* Points to a hanabi_learning_env::HanabiObservation. */
   void* observation;
 } pyhanabi_observation_t;
+
+typedef struct PyHanabiBatchObservation {
+  /* Points to a hanabi_learning_env::HanabiBatchObservation. */
+  char* observation;
+  char* legal_moves;
+  double* reward;
+  char* done;
+  int shape[2];
+} pyhanabi_batch_observation_t;
 
 typedef struct PyHanabiObservationEncoder {
   /* Points to a hanabi_learning_env::ObservationEncoder. */
@@ -152,6 +166,31 @@ int NumCards(pyhanabi_game_t* game, int color, int rank);
 int GetMoveUid(pyhanabi_game_t* game, pyhanabi_move_t* move);
 void GetMoveByUid(pyhanabi_game_t* game, int move_uid, pyhanabi_move_t* move);
 int MaxMoves(pyhanabi_game_t* game);
+/* Parallel Game functions */
+void DeleteParallelEnv(pyhanabi_parallel_env_t* parallel_env);
+void NewParallelEnv(pyhanabi_parallel_env_t* parallel_env,
+                     const int param_list_len,
+                     const char** param_list,
+                     const int n_states,
+                     const bool reset_state_on_game_end);
+int ParallelMaxMoves(const pyhanabi_parallel_env_t* parallel_env);
+void ParallelParentGame(pyhanabi_game_t* parent_game,
+                        const pyhanabi_parallel_env_t* parallel_env);
+int ParallelGetNumStates(const pyhanabi_parallel_env_t* parallel_env);
+int ParallelGetObservationLength(const pyhanabi_parallel_env_t* parallel_env);
+void ParallelApplyBatchMove(pyhanabi_batch_observation_t* batch_observation,
+                            pyhanabi_parallel_env_t* parallel_env,
+                            const int batch_move_len,
+                            const int* batch_move,
+                            const int agent_id);
+void ParallelObserveAgent(pyhanabi_batch_observation_t* batch_observation,
+                          const pyhanabi_parallel_env_t* parallel_env,
+                          const int agent_id);
+
+/* BatchObservation functions. */
+void NewBatchObservation(pyhanabi_batch_observation_t* batch_observation,
+                         const pyhanabi_parallel_env_t* parallel_env);
+void DeleteBatchObservation(pyhanabi_batch_observation_t* batch_observation);
 
 /* Observation functions. */
 void NewObservation(pyhanabi_state_t* state, int player,
