@@ -883,7 +883,10 @@ class HanabiParallelEnv(object):
                          reset_state_on_terminal)
       self.parent_game = HanabiParallelEnv.ParentGame()
       lib.ParallelParentGame(self.parent_game._game, self._parallel_env)
-      self.last_observation = HanabiBatchObservation(self._parallel_env)
+      self.last_observation = HanabiParallelEnv.HanabiBatchObservation(self._parallel_env)
+
+  def get_shapes(self):
+      return self.last_observation.n_states, self.last_observation.obs_len, self.last_observation.max_moves
 
   def new_initial_observation(self):
     """
