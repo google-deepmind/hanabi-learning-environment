@@ -763,6 +763,10 @@ class HanabiGame(object):
     """Returns the initial number of life tokens."""
     return lib.MaxLifeTokens(self._game)
 
+  def cards_per_color(self):
+    """Returns the number of cards per color"""
+    return lib.CardsPerColor(self._game)
+
   def observation_type(self):
     return AgentObservationType(lib.ObservationType(self._game))
 

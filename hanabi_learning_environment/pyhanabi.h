@@ -161,6 +161,7 @@ int NumRanks(pyhanabi_game_t* game);
 int HandSize(pyhanabi_game_t* game);
 int MaxInformationTokens(pyhanabi_game_t* game);
 int MaxLifeTokens(pyhanabi_game_t* game);
+int CardsPerColor(pyhanabi_game_t* game);
 int ObservationType(pyhanabi_game_t* game);
 int NumCards(pyhanabi_game_t* game, int color, int rank);
 int GetMoveUid(pyhanabi_game_t* game, pyhanabi_move_t* move);

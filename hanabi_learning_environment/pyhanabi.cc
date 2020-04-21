@@ -570,6 +570,11 @@ int MaxLifeTokens(pyhanabi_game_t* game) {
       ->MaxLifeTokens();
 }
 
+int CardsPerColor(pyhanabi_game_t* game) {
+  return reinterpret_cast<hanabi_learning_env::HanabiGame*>(game->game)
+      ->CardsPerColor();
+}
+
 int ObservationType(pyhanabi_game_t* game) {
   return reinterpret_cast<hanabi_learning_env::HanabiGame*>(game->game)
       ->ObservationType();
