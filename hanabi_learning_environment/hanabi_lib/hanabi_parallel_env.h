@@ -15,6 +15,7 @@
 #ifndef __HANABI_PARALLEL_ENV_H__
 #define __HANABI_PARALLEL_ENV_H__
 
+#include <algorithm>
 #include <random>
 #include <string>
 #include <unordered_map>
@@ -36,44 +37,55 @@ class HanabiParallelEnv {
 
   /** \brief Struct for batched observations.
    */
-  struct HanabiBatchObservation {
+  struct HanabiEncodedBatchObservation {
+
     /** \brief Contruct a batched observation of given shape.
-     *  \param shape Shape of the observation (n states x encoded observation length).
+     *
+     *  \param n_states Number of states.
+     *  \param observation_len Length of a single flat encoded observation.
+     *  \param max_moves Total number of possible moves.
      */
-    HanabiBatchObservation(const std::array<int, 2> shape) : shape(shape) {
-      observation.resize(std::get<0>(shape) * std::get<1>(shape));
-      legal_moves.resize(std::get<0>(shape));
-      reward.resize(std::get<0>(shape));
-      done.resize(std::get<0>(shape));
+    HanabiEncodedBatchObservation(const int n_states, const int observation_len,
+        const int max_moves)
+      : observation(n_states * observation_len),
+        legal_moves(n_states * max_moves, 0),
+        scores(n_states),
+        done(n_states),
+        observation_shape({n_states, observation_len}),
+        legal_moves_shape({n_states, max_moves}) {
     }
-    std::vector<int> observation;
-    std::vector<std::vector<int>> legal_moves;
-    std::vector<double> reward;
-    std::vector<bool> done;
-    std::array<int, 2> shape{0, 0}; // n_states x encoded_observation_length
+    std::vector<int> observation; //< Concatenated flat encoded observations.
+    std::vector<int> legal_moves; //< Concatenated legal moves.
+    std::vector<int> scores;      //< Concatenated scores.
+    std::vector<bool> done;       //< Concatenated termination statuses.
+    std::array<int, 2> observation_shape{0, 0}; //< Shape of batched observation (n_states x encoded_observation_length).
+    std::array<int, 2> legal_moves_shape{0, 0}; //< Shape of legal moves (n_states x max_moves).
   };
 
   /** \brief Construct and environment with a single game with several parallel states.
+   *
    *  \param game_params Parameters of the game. See HanabiGame.
    *  \param n_states Number of parallel states.
-   *  \param reset_state_on_game_end Whether the state should be automatically reset. Default true.
    */
-  explicit HanabiParallelEnv(const std::unordered_map<std::string, std::string>& game_params,
-      const int n_states, const bool reset_state_on_game_end=true);
+  explicit HanabiParallelEnv(
+      const std::unordered_map<std::string, std::string>& game_params,
+      const int n_states);
 
-  /** \brief Make a step: apply moves to states and return observations for current players.
+  /** \brief Make a step: apply moves to states.
+   *
    *  \param batch_move Moves, one for each state.
-   *  \return HanabiBatchObservation with all states.
    */
-  HanabiBatchObservation ApplyBatchMove(
+  void ApplyBatchMove(
       const std::vector<HanabiMove>& batch_move, const int agent_id);
   
   /** \overload with moves encoded as move ids.
    */
-  HanabiBatchObservation ApplyBatchMove(
+  void ApplyBatchMove(
       const std::vector<int>& batch_move, const int agent_id);
 
-  HanabiBatchObservation ObserveAgent(const int agent_id);
+  /** \brief Get observations for a specific agent.
+   */
+  HanabiEncodedBatchObservation ObserveAgent(const int agent_id);
 
   /** \brief Get a reference to the HanabiGame game.
    */
@@ -89,37 +101,44 @@ class HanabiParallelEnv {
    */
   std::vector<int> GetObservationShape() const {return observation_encoder_.Shape();};
 
+  /** \brief Get the curernt score for each state.
+   */
+  std::vector<int> GetScores() const;
+
   /** \brief Get length of a single flattened encoded observation.
    */
   int GetObservationFlatLength() const;
 
   /** \brief Number of parallel states in this environment.
    */
-  int GetNumStates() const {return parallel_states_.size();};
+  int GetNumStates() const {return n_states_;};
 
   /** \brief Number of possible moves for this a game in this environment.
    */
   int MaxMoves() const {return game_.MaxMoves();}
 
   /** \brief Check for states that are terminal and create new ones instead of those.
-   *  This function is called after each Step if reset_state_on_game_end_ is set to true. Otherwise
-   *  user is responsible for dealing with terminal states.
    *
-   *  \param agent_id Id of the agent which made the last move.
+   *  \param current_agent_id Id of the agent whose turn it is now.
    */
-  void ResetFinishedStates(const int agent_id);
+  void ResetFinishedStates(const int current_agent_id);
+
+  /** \brief Reset the environment, i.e. reset all states to initial.
+   */
+  void Reset();
 
  private:
   /** \brief Create a new state and deal the cards.
+   *
+   *  \return New HanabiState with cards dealt to players.
    */
   HanabiState NewState();
 
-  HanabiGame game_;
-  std::vector<std::vector<HanabiObservation>> observations_; //< List of state observations for each player
-  std::vector<HanabiState> parallel_states_;                 //< List with game states.
-  std::vector<std::vector<int>> agent_player_mapping_;       //< List of players associated with each agent.
-  CanonicalObservationEncoder observation_encoder_;
-  bool reset_state_on_game_end_ = true;
+  HanabiGame game_;                                     //< Underlying instance of HanabiGame.
+  std::vector<HanabiState> parallel_states_;            //< List with game states.
+  std::vector<std::vector<int>> agent_player_mapping_;  //< List of players associated with each agent.
+  CanonicalObservationEncoder observation_encoder_;     //< Observation encoder.
+  const int n_states_ = 1;                              //< Number of parallel states.
 };
 
 }  // namespace hanabi_learning_env
