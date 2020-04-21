@@ -721,28 +721,38 @@ void NewBatchObservation(pyhanabi_batch_observation_t* batch_observation,
   REQUIRE(batch_observation != nullptr);
   REQUIRE(parallel_env != nullptr);
   REQUIRE(parallel_env->parallel_env != nullptr);
+
   const auto hanabi_parallel_env =
-    reinterpret_cast<const hanabi_learning_env::HanabiParallelEnv*>(parallel_env->parallel_env);
+      reinterpret_cast<const hanabi_learning_env::HanabiParallelEnv*>(
+          parallel_env->parallel_env);
   const int n_states = hanabi_parallel_env->GetNumStates();
   const auto obs_shape = hanabi_parallel_env->GetObservationShape();
-  const int obs_len = std::accumulate(obs_shape.begin(), obs_shape.end(), 1, std::multiplies<int>());
+  const int obs_len = std::accumulate(obs_shape.begin(), obs_shape.end(), 1,
+      std::multiplies<int>());
   const int max_moves = hanabi_parallel_env->GetGame().MaxMoves();
+
   REQUIRE(n_states > 0);
   REQUIRE(obs_len > 0);
   REQUIRE(max_moves > 0);
-  batch_observation->shape[0] = n_states;
-  batch_observation->shape[1] = obs_len;
-  REQUIRE(batch_observation->shape[0] > 0);
-  REQUIRE(batch_observation->shape[1] > 0);
-  batch_observation->observation =
-    (char*) malloc(sizeof(char) * batch_observation->shape[0] * batch_observation->shape[1]);
-  batch_observation->reward =
-    (double*) malloc(sizeof(double) * batch_observation->shape[0]);
-  batch_observation->done =
-    (char*) malloc(sizeof(char) * batch_observation->shape[0]);
-  batch_observation->legal_moves =
-    (char*) malloc(sizeof(char) * batch_observation->shape[0] * max_moves);
-  REQUIRE(batch_observation->reward != nullptr);
+  batch_observation->observation_shape[0] = n_states;
+  batch_observation->legal_moves_shape[0] = n_states;
+  batch_observation->observation_shape[1] = obs_len;
+  batch_observation->legal_moves_shape[1] = max_moves;
+  REQUIRE(batch_observation->observation_shape[0] == n_states);
+  REQUIRE(batch_observation->legal_moves_shape[0] == n_states);
+  REQUIRE(batch_observation->observation_shape[1] == obs_len);
+  REQUIRE(batch_observation->legal_moves_shape[1] == max_moves);
+
+  batch_observation->observation = (int8_t*) malloc(sizeof(int8_t)
+      * batch_observation->observation_shape[0]
+      * batch_observation->observation_shape[1]);
+  batch_observation->legal_moves = (int8_t*) malloc(sizeof(int8_t)
+      * batch_observation->legal_moves_shape[0]
+      * batch_observation->legal_moves_shape[1]);
+  batch_observation->scores = (int16_t*) malloc(sizeof(int16_t) * n_states);
+  batch_observation->done = (int8_t*) malloc(sizeof(int8_t) * n_states);
+
+  REQUIRE(batch_observation->scores != nullptr);
   REQUIRE(batch_observation->legal_moves != nullptr);
   REQUIRE(batch_observation->done != nullptr);
   REQUIRE(batch_observation->observation != nullptr);
@@ -754,8 +764,8 @@ void DeleteBatchObservation(pyhanabi_batch_observation_t* batch_observation) {
     free(batch_observation->observation);
   if (batch_observation->legal_moves != nullptr)
     free(batch_observation->legal_moves);
-  if (batch_observation->reward != nullptr)
-    free(batch_observation->reward);
+  if (batch_observation->scores != nullptr)
+    free(batch_observation->scores);
   if (batch_observation->done != nullptr)
     free(batch_observation->done);
 }

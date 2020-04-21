@@ -21,6 +21,8 @@
  * The set of functions below is referred to as the 'cdef' throughout the code.
  */
 
+#include <stdint.h>
+
 extern "C" {
 
 typedef struct PyHanabiCard {
@@ -65,11 +67,12 @@ typedef struct PyHanabiObservation {
 
 typedef struct PyHanabiBatchObservation {
   /* Points to a hanabi_learning_env::HanabiBatchObservation. */
-  char* observation;
-  char* legal_moves;
-  double* reward;
-  char* done;
-  int shape[2];
+  int8_t* observation;
+  int8_t* legal_moves;
+  int16_t* scores;
+  int8_t* done;
+  int observation_shape[2];
+  int legal_moves_shape[2];
 } pyhanabi_batch_observation_t;
 
 typedef struct PyHanabiObservationEncoder {

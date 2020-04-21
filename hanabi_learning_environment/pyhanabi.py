@@ -809,40 +809,46 @@ class HanabiParallelEnv(object):
   class HanabiBatchObservation(object):
     """Batch observation for the HanabiParallelEnv.
 
-    Python wrapper for C batch observation container which facilitates access to it via numpy arrays.
-    Use following properties to access:
-     - batch_observation -- vectorized observation of shape (n states x vectorized observation length).
-     - legal_moves -- one-hot encoding of legal moves of shape (n states x max moves).
-     - rewards -- rewards for each state (n states).
-     - done -- indicates whether the states are terminal (n states). Note: always 0 if the
-                environment resets states automatically.
+    Python wrapper for C batch observation container which facilitates access
+    to it via numpy arrays.
 
-    Do not instantiate it directly. Instead, use HanabiParallelEnv.last_observation.
+    Use following properties to access:
+    - batch_observation -- vectorized observation of shape.
+                           (n states x vectorized observation length).
+    - legal_moves       -- one-hot encoding of legal moves of shape
+                           (n states x max moves).
+    - scores            -- scores earned in each state (n states).
+    - done              -- indicates whether the states are terminal (n states).
+
+    Do not instantiate HanabiBatchObservation directly. Instead, use
+    HanabiParallelEnv.last_observation, in which case it is created and managed
+    by HanabiParallelEnv.
     """
     def __init__(self, parallel_env):
       self._observation = ffi.new("pyhanabi_batch_observation_t*")
       lib.NewBatchObservation(self._observation, parallel_env)
       self.n_states, self.obs_len, self.max_moves = (
-          self._observation.shape[0],
-          self._observation.shape[1],
-          lib.ParallelMaxMoves(parallel_env))
+          self._observation.observation_shape[0],
+          self._observation.observation_shape[1],
+          self._observation.legal_moves_shape[1])
       self.batch_observation = self._asarray(
           self._observation.observation,
           self.n_states * self.obs_len,
-          np.byte).reshape((self.n_states, self.obs_len))
+          np.int8).reshape((self.n_states, self.obs_len))
       self.legal_moves = self._asarray(
           self._observation.legal_moves,
           self.n_states * self.max_moves,
-          np.byte).reshape((self.n_states, self.max_moves))
-      self.done = self._asarray(self._observation.done, self.n_states, np.byte)
-      self.rewards = self._asarray(self._observation.reward, self.n_states, np.float64)
+          np.int8).reshape((self.n_states, self.max_moves))
+      self.done = self._asarray(self._observation.done, self.n_states, np.int8)
+      self.scores = self._asarray(self._observation.scores, self.n_states,
+              np.int16)
 
-    def _asarray(self, arr_ptr, arr_size, np_dtype):
-      """
-      Access cdata via numpy array.
-      """
+    @staticmethod
+    def _asarray(arr_ptr, arr_size, np_dtype):
+      """Create accessor to cdata via numpy array."""
       value_t = ffi.getctype(ffi.typeof(arr_ptr).item)
-      return np.frombuffer(ffi.buffer(arr_ptr, arr_size * ffi.sizeof(value_t)), dtype=np_dtype)
+      return np.frombuffer(ffi.buffer(arr_ptr, arr_size * ffi.sizeof(value_t)),
+                           dtype=np_dtype)
 
     def __del__(self):
       if self._observation is not None:
