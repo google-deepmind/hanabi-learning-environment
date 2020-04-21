@@ -628,7 +628,33 @@ void NewParallelEnv(pyhanabi_parallel_env_t* parallel_env, const int param_list_
 
   parallel_env->parallel_env =
     static_cast<hanabi_learning_env::HanabiParallelEnv*>(
-      new hanabi_learning_env::HanabiParallelEnv(params, n_states, reset_state_on_game_end));
+      new hanabi_learning_env::HanabiParallelEnv(game_params, n_states));
+  REQUIRE(parallel_env->parallel_env != nullptr);
+}
+
+void _ParallelCopyBatchObservation(
+      pyhanabi_batch_observation_t* batch_observation,
+      hanabi_learning_env::HanabiParallelEnv* hanabi_parallel_env,
+      const int agent_id) {
+  REQUIRE(batch_observation->observation != nullptr);
+  REQUIRE(batch_observation->legal_moves != nullptr);
+  REQUIRE(batch_observation->done != nullptr);
+  REQUIRE(batch_observation->scores != nullptr);
+
+  const auto batch_obs = hanabi_parallel_env->ObserveAgent(agent_id);
+  std::copy(batch_obs.observation.begin(), batch_obs.observation.end(),
+      batch_observation->observation);
+  std::copy(batch_obs.legal_moves.begin(), batch_obs.legal_moves.end(),
+      batch_observation->legal_moves);
+  std::copy(batch_obs.scores.begin(), batch_obs.scores.end(),
+      batch_observation->scores);
+  std::copy(batch_obs.done.begin(), batch_obs.done.end(),
+      batch_observation->done);
+}
+
+void ParallelEnvReset(pyhanabi_batch_observation_t* batch_observation,
+                      pyhanabi_parallel_env_t* parallel_env) {
+  REQUIRE(parallel_env != nullptr);
   REQUIRE(parallel_env->parallel_env != nullptr);
 }
 
@@ -658,35 +684,26 @@ int ParallelGetObservationLength(const pyhanabi_parallel_env_t* parallel_env) {
   return std::accumulate(obs_shape.begin(), obs_shape.end(), 1, std::multiplies<int>());
 }
 
-void ParallelApplyBatchMove(pyhanabi_batch_observation_t* batch_observation,
-                            pyhanabi_parallel_env_t* parallel_env,
+void ParallelApplyBatchMove(pyhanabi_parallel_env_t* parallel_env,
                             const int batch_move_len,
                             const int* batch_move,
                             const int agent_id) {
   REQUIRE(parallel_env != nullptr);
   REQUIRE(parallel_env->parallel_env != nullptr);
-  REQUIRE(batch_observation != nullptr);
-  REQUIRE(batch_observation->observation != nullptr);
-  REQUIRE(batch_observation->legal_moves != nullptr);
-  REQUIRE(batch_observation->done != nullptr);
-  REQUIRE(batch_observation->reward != nullptr);
   auto hanabi_parallel_env =
-      reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(parallel_env->parallel_env);
+      reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
+          parallel_env->parallel_env);
   std::vector<int> vec_batch_move;
   vec_batch_move.assign(batch_move, batch_move + (batch_move_len));
-  const auto max_moves = hanabi_parallel_env->GetGame().MaxMoves();
-  const auto n_states = batch_observation->shape[0];
-  auto batch_obs = hanabi_parallel_env->ApplyBatchMove(vec_batch_move, agent_id);
-  std::copy(batch_obs.observation.begin(), batch_obs.observation.end(), batch_observation->observation);
-  std::copy(batch_obs.reward.begin(), batch_obs.reward.end(), batch_observation->reward);
-  std::copy(batch_obs.done.begin(), batch_obs.done.end(), batch_observation->done);
-  auto lm_ptr = batch_observation->legal_moves;
-  std::fill(lm_ptr, lm_ptr + max_moves * n_states, 0);
-  for (int lm_batch_idx = 0; lm_batch_idx < n_states; ++lm_batch_idx) {
-    for (int lm : batch_obs.legal_moves[lm_batch_idx]) {
-      *(lm_ptr + lm_batch_idx * max_moves + lm) = 1;
-    }
-  }
+  hanabi_parallel_env->ApplyBatchMove(vec_batch_move, agent_id);
+}
+
+void ParallelResetTerminalStates(pyhanabi_parallel_env_t* parallel_env,
+                                 const int current_agent_id) {
+  REQUIRE(parallel_env != nullptr);
+  REQUIRE(parallel_env->parallel_env != nullptr);
+  reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
+      parallel_env->parallel_env)->ResetFinishedStates(current_agent_id);
 }
 
 void ParallelObserveAgent(pyhanabi_batch_observation_t* batch_observation,
@@ -695,25 +712,11 @@ void ParallelObserveAgent(pyhanabi_batch_observation_t* batch_observation,
   REQUIRE(parallel_env != nullptr);
   REQUIRE(parallel_env->parallel_env != nullptr);
   REQUIRE(batch_observation != nullptr);
-  REQUIRE(batch_observation->observation != nullptr);
-  REQUIRE(batch_observation->legal_moves != nullptr);
-  REQUIRE(batch_observation->done != nullptr);
-  REQUIRE(batch_observation->reward != nullptr);
-  auto batch_obs = reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
-      parallel_env->parallel_env)->ObserveAgent(agent_id);
-  const auto max_moves = reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
-      parallel_env->parallel_env)->GetGame().MaxMoves();
-  const auto n_states = batch_observation->shape[0];
-  std::copy(batch_obs.observation.begin(), batch_obs.observation.end(), batch_observation->observation);
-  std::copy(batch_obs.reward.begin(), batch_obs.reward.end(), batch_observation->reward);
-  std::copy(batch_obs.done.begin(), batch_obs.done.end(), batch_observation->done);
-  auto lm_ptr = batch_observation->legal_moves;
-  std::fill(lm_ptr, lm_ptr + max_moves * n_states, 0);
-  for (int lm_batch_idx = 0; lm_batch_idx < n_states; ++lm_batch_idx) {
-    for (int lm : batch_obs.legal_moves[lm_batch_idx]) {
-      *(lm_ptr + lm_batch_idx * max_moves + lm) = 1;
-    }
-  }
+  auto hanabi_parallel_env =
+      reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
+          parallel_env->parallel_env);
+  _ParallelCopyBatchObservation(
+      batch_observation, hanabi_parallel_env, agent_id);
 }
 
 void NewBatchObservation(pyhanabi_batch_observation_t* batch_observation,
