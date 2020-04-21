@@ -615,15 +615,17 @@ void DeleteParallelEnv(pyhanabi_parallel_env_t* parallel_env) {
   parallel_env->parallel_env = nullptr;
 }
 
-void NewParallelEnv(pyhanabi_parallel_env_t* parallel_env, const int param_list_len, const char** param_list,
-    const int n_states, const bool reset_state_on_game_end) {
+void NewParallelEnv(pyhanabi_parallel_env_t* parallel_env,
+                    const int param_list_len,
+                    const char** param_list,
+                    const int n_states) {
   REQUIRE(parallel_env != nullptr);
-  std::unordered_map<std::string, std::string> params;
+  std::unordered_map<std::string, std::string> game_params;
 
   for (int p = 0; p < param_list_len; p += 2) {
     std::string key = param_list[p];
     std::string value = param_list[p + 1];
-    params[key] = value;
+    game_params[key] = value;
   }
 
   parallel_env->parallel_env =
@@ -652,10 +654,13 @@ void _ParallelCopyBatchObservation(
       batch_observation->done);
 }
 
-void ParallelEnvReset(pyhanabi_batch_observation_t* batch_observation,
-                      pyhanabi_parallel_env_t* parallel_env) {
+void ParallelEnvReset(pyhanabi_parallel_env_t* parallel_env) {
   REQUIRE(parallel_env != nullptr);
   REQUIRE(parallel_env->parallel_env != nullptr);
+  auto hanabi_parallel_env =
+      reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
+          parallel_env->parallel_env);
+  hanabi_parallel_env->Reset();
 }
 
 void ParallelParentGame(pyhanabi_game_t* parent_game,
@@ -673,15 +678,17 @@ int ParallelMaxMoves(const pyhanabi_parallel_env_t* parallel_env) {
             parallel_env->parallel_env)->GetGame().MaxMoves();
 }
 
-int ParallelGetNumStates(const pyhanabi_parallel_env_t* parallel_env) {
+int ParallelNumStates(const pyhanabi_parallel_env_t* parallel_env) {
   return reinterpret_cast<const hanabi_learning_env::HanabiParallelEnv*>(
             parallel_env->parallel_env)->GetNumStates();
 }
 
-int ParallelGetObservationLength(const pyhanabi_parallel_env_t* parallel_env) {
-  auto obs_shape = reinterpret_cast<const hanabi_learning_env::HanabiParallelEnv*>(
-      parallel_env->parallel_env)->GetObservationShape();
-  return std::accumulate(obs_shape.begin(), obs_shape.end(), 1, std::multiplies<int>());
+int ParallelObservationLength(const pyhanabi_parallel_env_t* parallel_env) {
+  auto obs_shape =
+      reinterpret_cast<const hanabi_learning_env::HanabiParallelEnv*>(
+          parallel_env->parallel_env)->GetObservationShape();
+  return std::accumulate(obs_shape.begin(), obs_shape.end(), 1,
+            std::multiplies<int>());
 }
 
 void ParallelApplyBatchMove(pyhanabi_parallel_env_t* parallel_env,

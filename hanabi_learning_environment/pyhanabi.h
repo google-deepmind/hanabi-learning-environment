@@ -170,26 +170,28 @@ int NumCards(pyhanabi_game_t* game, int color, int rank);
 int GetMoveUid(pyhanabi_game_t* game, pyhanabi_move_t* move);
 void GetMoveByUid(pyhanabi_game_t* game, int move_uid, pyhanabi_move_t* move);
 int MaxMoves(pyhanabi_game_t* game);
+
 /* Parallel Game functions */
 void DeleteParallelEnv(pyhanabi_parallel_env_t* parallel_env);
 void NewParallelEnv(pyhanabi_parallel_env_t* parallel_env,
                      const int param_list_len,
                      const char** param_list,
-                     const int n_states,
-                     const bool reset_state_on_game_end);
+                     const int n_states);
+void ParallelEnvReset(pyhanabi_parallel_env_t* parallel_env);
 int ParallelMaxMoves(const pyhanabi_parallel_env_t* parallel_env);
 void ParallelParentGame(pyhanabi_game_t* parent_game,
                         const pyhanabi_parallel_env_t* parallel_env);
-int ParallelGetNumStates(const pyhanabi_parallel_env_t* parallel_env);
-int ParallelGetObservationLength(const pyhanabi_parallel_env_t* parallel_env);
-void ParallelApplyBatchMove(pyhanabi_batch_observation_t* batch_observation,
-                            pyhanabi_parallel_env_t* parallel_env,
+int ParallelNumStates(const pyhanabi_parallel_env_t* parallel_env);
+int ParallelObservationLength(const pyhanabi_parallel_env_t* parallel_env);
+void ParallelApplyBatchMove(pyhanabi_parallel_env_t* parallel_env,
                             const int batch_move_len,
                             const int* batch_move,
                             const int agent_id);
 void ParallelObserveAgent(pyhanabi_batch_observation_t* batch_observation,
                           const pyhanabi_parallel_env_t* parallel_env,
                           const int agent_id);
+void ParallelResetTerminalStates(pyhanabi_parallel_env_t* parallel_env,
+                                 const int current_agent_id);
 
 /* BatchObservation functions. */
 void NewBatchObservation(pyhanabi_batch_observation_t* batch_observation,

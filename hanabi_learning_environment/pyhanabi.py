@@ -795,7 +795,8 @@ class HanabiParallelEnv(object):
   Python wrapper of C++ HanabiParallelEnv class.
   """
   class ParentGame(HanabiGame):
-    """HanabiGame class for HanabiParallelEnv with C++ HanabiGame instance managed by HanabiParallelEnv.
+    """HanabiGame class for HanabiParallelEnv with C++ HanabiGame instance
+    managed by HanabiParallelEnv.
 
     Convenience class for retrieving HanabiGame stats.
     For internal use only.
@@ -856,11 +857,12 @@ class HanabiParallelEnv(object):
         self._observation = None
       del self
 
-  def __init__(self, params=None, n_states=1, reset_state_on_terminal=True):
+  def __init__(self, params=None, n_states=1):
     """Creates a HanabiParallelEnv object.
 
     Args:
       params: is a dictionary of parameters and their values.
+      n_states: number of parallel states.
 
     Possible parameters include
     "players": 2 <= number of players <= 5
@@ -889,20 +891,43 @@ class HanabiParallelEnv(object):
       lib.NewParallelEnv(self._parallel_env,
                          len(param_list),
                          c_array,
-                         n_states,
-                         reset_state_on_terminal)
+                         n_states)
       self.parent_game = HanabiParallelEnv.ParentGame()
       lib.ParallelParentGame(self.parent_game._game, self._parallel_env)
-      self.last_observation = HanabiParallelEnv.HanabiBatchObservation(self._parallel_env)
+      self.last_observation = HanabiParallelEnv.HanabiBatchObservation(
+              self._parallel_env)
 
-  def get_shapes(self):
-      return self.last_observation.n_states, self.last_observation.obs_len, self.last_observation.max_moves
+  def num_states(self):
+    """Get number of parallel states."""
+    return lib.ParallelNumStates(self._parallel_env)
 
-  def new_initial_observation(self):
+  def observation_len(self):
+    """Length of a single flat encoded observation."""
+    return lib.ParallelObservationLength(self._parallel_env)
+
+  def reset(self):
+    """Reset the environment.
+    Reset all states to initial and write an initial observation into
+    self.last_observation.
     """
-    Writes an initial observation into self.last_observation
+    lib.ParallelEnvReset(self._parallel_env)
+    self.observe_agent(0)
+
+  def observe_agent(self, agent_id):
+    """Update last_observation with the current observation from specified
+    agent's perspective.
+
+    Args:
+        agent_id: id of the observing agent.
     """
-    lib.ParallelObserveAgent(self.last_observation._observation, self._parallel_env, 0)
+    lib.ParallelObserveAgent(self.last_observation._observation,
+                             self._parallel_env,
+                             agent_id)
+
+  def reset_terminal_states(self, current_agent_id):
+    """Reset any terminal states to an initial state.
+    Agent should re-observe after this method was called."""
+    lib.ParallelResetTerminalStates(self._parallel_env, current_agent_id)
 
   @property
   def c_parallel_env(self):
@@ -921,11 +946,12 @@ class HanabiParallelEnv(object):
   def apply_batch_move(self, batch_move, agent_id):
     """
     Args:
-        batch_move -- 1D list with indices of selected moves (must be legal) of size (n states).
-        agent_id -- id of the agent performing the actions. It must be agent's turn.
+        batch_move -- 1D list with indices of selected moves (must be legal)
+                      of size (n states).
+        agent_id -- id of the agent performing the actions.
+                    It must be agent's turn.
     """
-    lib.ParallelApplyBatchMove(self.last_observation._observation,
-                               self._parallel_env,
+    lib.ParallelApplyBatchMove(self._parallel_env,
                                len(batch_move),
                                batch_move,
                                agent_id)
