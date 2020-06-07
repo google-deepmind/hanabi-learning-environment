@@ -190,8 +190,10 @@ void ParallelApplyBatchMove(pyhanabi_parallel_env_t* parallel_env,
 void ParallelObserveAgent(pyhanabi_batch_observation_t* batch_observation,
                           const pyhanabi_parallel_env_t* parallel_env,
                           const int agent_id);
-void ParallelResetTerminalStates(pyhanabi_parallel_env_t* parallel_env,
-                                 const int current_agent_id);
+void ParallelResetStates(pyhanabi_parallel_env_t* parallel_env,
+                         const int states_len,
+                         const int* states,
+                         const int current_agent_id);
 
 /* BatchObservation functions. */
 void NewBatchObservation(pyhanabi_batch_observation_t* batch_observation,

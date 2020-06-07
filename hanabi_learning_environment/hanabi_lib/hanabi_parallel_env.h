@@ -119,9 +119,10 @@ class HanabiParallelEnv {
 
   /** \brief Check for states that are terminal and create new ones instead of those.
    *
+   *  \param states           States to be reset.
    *  \param current_agent_id Id of the agent whose turn it is now.
    */
-  void ResetFinishedStates(const int current_agent_id);
+  void ResetStates(const std::vector<int> states, const int current_agent_id);
 
   /** \brief Reset the environment, i.e. reset all states to initial.
    */

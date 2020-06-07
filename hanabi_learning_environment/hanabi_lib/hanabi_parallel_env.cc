@@ -67,23 +67,35 @@ std::vector<int> hanabi_learning_env::HanabiParallelEnv::GetScores() const {
   return scores;
 }
 
-void hanabi_learning_env::HanabiParallelEnv::ResetFinishedStates(
+void hanabi_learning_env::HanabiParallelEnv::ResetStates(
+    const std::vector<int> states,
     const int current_agent_id) {
   #pragma omp parallel for
-  for (size_t state_idx = 0; state_idx < parallel_states_.size(); ++state_idx) {
-    auto& state = parallel_states_[state_idx];
-    if (state.IsTerminal()) {
-      state = NewState();
-      for (int player_idx = 0; player_idx < game_.NumPlayers(); ++player_idx) {
-        const int agent_id =
-          (current_agent_id + player_idx) % game_.NumPlayers();
-        const int corresponding_player_id =
-          (state.CurPlayer() + player_idx) % game_.NumPlayers();
-        agent_player_mapping_[agent_id][state_idx] = corresponding_player_id;
-      }
+  for (size_t state_idx = 0; state_idx < states.size(); ++state_idx) {
+    auto& state = parallel_states_[states[state_idx]];
+    state = NewState();
+    for (int player_idx = 0; player_idx < game_.NumPlayers(); ++player_idx) {
+      const int agent_id =
+        (current_agent_id + player_idx) % game_.NumPlayers();
+      const int corresponding_player_id =
+        (state.CurPlayer() + player_idx) % game_.NumPlayers();
+      agent_player_mapping_[agent_id][state_idx] = corresponding_player_id;
     }
-    REQUIRE(!parallel_states_[state_idx].IsTerminal());
   }
+  // for (size_t state_idx = 0; state_idx < parallel_states_.size(); ++state_idx) {
+  //   auto& state = parallel_states_[state_idx];
+  //   if (state.IsTerminal()) {
+  //     state = NewState();
+  //     for (int player_idx = 0; player_idx < game_.NumPlayers(); ++player_idx) {
+  //       const int agent_id =
+  //         (current_agent_id + player_idx) % game_.NumPlayers();
+  //       const int corresponding_player_id =
+  //         (state.CurPlayer() + player_idx) % game_.NumPlayers();
+  //       agent_player_mapping_[agent_id][state_idx] = corresponding_player_id;
+  //     }
+  //   }
+  //   REQUIRE(!parallel_states_[state_idx].IsTerminal());
+  // }
 }
 
 void hanabi_learning_env::HanabiParallelEnv::ApplyBatchMove(

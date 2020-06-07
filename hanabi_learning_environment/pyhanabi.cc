@@ -705,12 +705,16 @@ void ParallelApplyBatchMove(pyhanabi_parallel_env_t* parallel_env,
   hanabi_parallel_env->ApplyBatchMove(vec_batch_move, agent_id);
 }
 
-void ParallelResetTerminalStates(pyhanabi_parallel_env_t* parallel_env,
-                                 const int current_agent_id) {
+void ParallelResetStates(pyhanabi_parallel_env_t* parallel_env,
+                         const int states_len,
+                         const int* states,
+                          const int current_agent_id) {
   REQUIRE(parallel_env != nullptr);
   REQUIRE(parallel_env->parallel_env != nullptr);
+  std::vector<int> vec_states;
+  vec_states.assign(states, states + states_len);
   reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
-      parallel_env->parallel_env)->ResetFinishedStates(current_agent_id);
+      parallel_env->parallel_env)->ResetStates(vec_states, current_agent_id);
 }
 
 void ParallelObserveAgent(pyhanabi_batch_observation_t* batch_observation,

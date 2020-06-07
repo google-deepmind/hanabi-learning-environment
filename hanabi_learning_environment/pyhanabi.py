@@ -924,10 +924,15 @@ class HanabiParallelEnv(object):
                              self._parallel_env,
                              agent_id)
 
-  def reset_terminal_states(self, current_agent_id):
-    """Reset any terminal states to an initial state.
-    Agent should re-observe after this method was called."""
-    lib.ParallelResetTerminalStates(self._parallel_env, current_agent_id)
+  def reset_states(self, states, current_agent_id):
+    """Reset specified states to an initial state.
+    Agent should re-observe after this method was called.
+
+    Args:
+        states: states which should be reset.
+        current_agent_id: id of the current agent.
+    """
+    lib.ParallelResetStates(self._parallel_env, states, current_agent_id)
 
   @property
   def c_parallel_env(self):
