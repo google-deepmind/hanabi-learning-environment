@@ -932,7 +932,10 @@ class HanabiParallelEnv(object):
         states: states which should be reset.
         current_agent_id: id of the current agent.
     """
-    lib.ParallelResetStates(self._parallel_env, states, current_agent_id)
+    lib.ParallelResetStates(self._parallel_env,
+                            len(states),
+                            list(states),
+                            current_agent_id)
 
   @property
   def c_parallel_env(self):
@@ -958,7 +961,7 @@ class HanabiParallelEnv(object):
     """
     lib.ParallelApplyBatchMove(self._parallel_env,
                                len(batch_move),
-                               batch_move,
+                               list(batch_move),
                                agent_id)
 
 class HanabiObservation(object):

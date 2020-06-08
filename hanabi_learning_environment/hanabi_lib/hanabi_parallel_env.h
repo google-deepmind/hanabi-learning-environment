@@ -101,7 +101,11 @@ class HanabiParallelEnv {
    */
   std::vector<int> GetObservationShape() const {return observation_encoder_.Shape();};
 
-  /** \brief Get the curernt score for each state.
+  /** \brief Get a const reference to the parallel states.
+   */
+  const std::vector<HanabiState>& GetStates() const {return parallel_states_;}
+
+  /** \brief Get the current score for each state.
    */
   std::vector<int> GetScores() const;
 
@@ -122,7 +126,7 @@ class HanabiParallelEnv {
    *  \param states           States to be reset.
    *  \param current_agent_id Id of the agent whose turn it is now.
    */
-  void ResetStates(const std::vector<int> states, const int current_agent_id);
+  void ResetStates(const std::vector<int>& states, const int current_agent_id);
 
   /** \brief Reset the environment, i.e. reset all states to initial.
    */
