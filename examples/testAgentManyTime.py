@@ -4,8 +4,7 @@ import numpy as np
 from hanabi_learning_environment import pyhanabi
 from hanabi_learning_environment import rl_env
 from hanabi_learning_environment.agents.simple_agent import SimpleAgent
-#from hanabi_learning_environment.agents.super_agent import SuperAgent
-# from hanabi_learning_environment.agents.discarder_agent import DiscarderAgent
+from hanabi_learning_environment.agents.chenyang_agent import ChenyangAgent
 
 # config du jeu
 config = {"players":2,"random_start_player":True}
@@ -14,7 +13,7 @@ config = {"players":2,"random_start_player":True}
 game = rl_env.HanabiEnv(config)
 
 #
-agents = [SimpleAgent(config),SimpleAgent(config)]
+agents = [ChenyangAgent(config),ChenyangAgent(config)]
 res=0
 for i in range(0,1000):
     #reset game
