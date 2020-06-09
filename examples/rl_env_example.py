@@ -20,8 +20,9 @@ import getopt
 from hanabi_learning_environment import rl_env
 from hanabi_learning_environment.agents.random_agent import RandomAgent
 from hanabi_learning_environment.agents.simple_agent import SimpleAgent
+from hanabi_learning_environment.agents.chenyang_agent import ChenyangAgent
 
-AGENT_CLASSES = {'SimpleAgent': SimpleAgent, 'RandomAgent': RandomAgent}
+AGENT_CLASSES = {'SimpleAgent': SimpleAgent, 'RandomAgent': RandomAgent,'ChenyangAgent':ChenyangAgent}
 
 
 class Runner(object):
@@ -64,7 +65,7 @@ class Runner(object):
     return rewards
 
 if __name__ == "__main__":
-  flags = {'players': 2, 'num_episodes': 1, 'agent_class': 'SimpleAgent'}
+  flags = {'players': 2, 'num_episodes': 50, 'agent_class': 'ChenyangAgent'}
   options, arguments = getopt.getopt(sys.argv[1:], '',
                                      ['players=',
                                       'num_episodes=',
