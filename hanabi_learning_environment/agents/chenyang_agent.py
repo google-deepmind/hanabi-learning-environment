@@ -18,7 +18,8 @@ from hanabi_learning_environment.rl_env import Agent
 
 class ChenyangAgent(Agent):
   """Agent that applies a simple heuristic."""
-
+  colors={'G','W','Y','B','R'}
+  ranks={0,1,2,3,4}
   def __init__(self, config, *args, **kwargs):
     """Initialize the agent."""
     self.config = config
@@ -33,20 +34,25 @@ class ChenyangAgent(Agent):
   def discardble_card(self, card, fireworks):
     return card['rank'] < fireworks[card['color']]
 
+  def exclusive_methode(self,card_knowledge):
+    pass
+
   def reveal_value(self,observation,reveal_action):
       pass
 
   def act(self, observation):
     """Act based on an observation."""
-    colors={'G','W','Y','B','R'}
-    ranks={0,1,2,3,4}
+    
+    num=observation['fireworks']['R']+observation['fireworks']['W']+observation['fireworks']['G']+observation['fireworks']['Y']+observation['fireworks']['B']
     if observation['current_player_offset'] != 0:
       return None
-
+    
     for card_index, hint in enumerate(observation['card_knowledge'][0]):
-      if hint['color'] is not None and hint['rank'] is not None:
-          if ChenyangAgent.discardble_card(self,observation['observed_hands'][0][card_index],observation['fireworks']):
-              return{'action_type':'DISCARD','card_index':card_index}
+      if hint['rank'] is 0:
+          if num==0:
+              return{'action_type':'PLAY','card_index':card_index}
+
+    
 
     # Check if there are any pending hints and play the card corresponding to
     # the hint.
@@ -55,9 +61,9 @@ class ChenyangAgent(Agent):
         if ChenyangAgent.playable_card(observation['observes_hands'][0][card_index],observation['fireworks']):
           return {'action_type': 'PLAY', 'card_index': card_index}
         else:
-          for card_color in colors:
-            move={ 'action_type': 'REVEAL_COLOR',
-              'color' : card_color,
+          for card_rank in ChenyangAgent.ranks:
+            move={ 'action_type': 'REVEAL_RANK',
+              'rank' : card_rank,
               'target_offset': 1}
             if move in observation['legal_moves']:
               return move
@@ -84,6 +90,25 @@ class ChenyangAgent(Agent):
                 'rank': card['rank'],
                 'target_offset': player_offset
             }
+          if ChenyangAgent.discardble_card(self,card,
+                                       fireworks) and hint['color'] is None:
+            return {
+                'action_type': 'REVEAL_COLOR',
+                'color': card['color'],
+                'target_offset': player_offset
+            }
+          if ChenyangAgent.discardble_card(self,card,
+                                       fireworks) and hint['rank'] is None:
+            return {
+                'action_type': 'REVEAL_RANK',
+                'rank': card['rank'],
+                'target_offset': player_offset
+            }
+
+    for card_index, hint in enumerate(observation['card_knowledge'][0]):
+      if hint['color'] is not None and hint['rank'] is not None:
+          if ChenyangAgent.discardble_card(self,observation['observed_hands'][0][card_index],observation['fireworks']):
+              return{'action_type':'DISCARD','card_index':card_index}
 
     # If no card is hintable then discard or play.
     if observation['information_tokens'] < self.max_information_tokens:
@@ -91,7 +116,7 @@ class ChenyangAgent(Agent):
             if hint['color'] is None and hint['rank'] is None:
               return {'action_type': 'DISCARD', 'card_index': card_index}
     else:
-      for card_rank in ranks:
+      for card_rank in ChenyangAgent.ranks:
             move={ 'action_type': 'REVEAL_RANK',
               'rank' : card_rank,
               'target_offset': 1}
