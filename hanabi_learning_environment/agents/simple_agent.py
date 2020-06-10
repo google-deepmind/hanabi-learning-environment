@@ -11,12 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Simple Agent."""
+"""Chenyang Agent."""
 
 from hanabi_learning_environment.rl_env import Agent
 
 
-class SimpleAgent(Agent):
+class ChenyangAgent(Agent):
   """Agent that applies a simple heuristic."""
 
   def __init__(self, config, *args, **kwargs):
@@ -32,25 +32,29 @@ class SimpleAgent(Agent):
 
   def act(self, observation):
     """Act based on an observation."""
+    # colors={'G','W','Y','B','R'}
+    # ranks={1,2,3,4,5}
+    
     if observation['current_player_offset'] != 0:
       return None
 
     # Check if there are any pending hints and play the card corresponding to
     # the hint.
     for card_index, hint in enumerate(observation['card_knowledge'][0]):
-      if hint['color'] is not None or hint['rank'] is not None:
-        return {'action_type': 'PLAY', 'card_index': card_index}
-
+      if hint['color'] is not None:
+        if observation['life_tokens']>1:
+          return {'action_type': 'PLAY', 'card_index': card_index}
+        
     # Check if it's possible to hint a card to your colleagues.
     fireworks = observation['fireworks']
     if observation['information_tokens'] > 0:
-      # Check if there are any playable cards in the hands of the opponents.
+      # Check if there are any playable cards in the hands of the colleagues.
       for player_offset in range(1, observation['num_players']):
         player_hand = observation['observed_hands'][player_offset]
         player_hints = observation['card_knowledge'][player_offset]
-        # Check if the card in the hand of the opponent is playable.
+        # Check if the card in the hand of the colleagues is playable.
         for card, hint in zip(player_hand, player_hints):
-          if SimpleAgent.playable_card(card,
+          if ChenyangAgent.playable_card(card,
                                        fireworks) and hint['color'] is None:
             return {
                 'action_type': 'REVEAL_COLOR',
@@ -60,6 +64,13 @@ class SimpleAgent(Agent):
 
     # If no card is hintable then discard or play.
     if observation['information_tokens'] < self.max_information_tokens:
-      return {'action_type': 'DISCARD', 'card_index': 0}
+      for card_index, hint in enumerate(observation['card_knowledge'][0]):
+       if hint['color'] is None and hint['rank'] is None:
+         return {'action_type': 'DISCARD', 'card_index': card_index}
     else:
-      return {'action_type': 'PLAY', 'card_index': 0}
+      for card_index, hint in enumerate(observation['card_knowledge'][1]):
+        if hint['rank'] is None:
+            return{ 'action_type': 'REVEAL_RANK',
+                    'rank' : observation['observed_hands'][1][card_index]['rank'],
+                    'target_offset': 1}
+    print('################################stop here#########################################')
