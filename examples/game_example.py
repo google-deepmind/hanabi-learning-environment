@@ -50,6 +50,7 @@ def run_game(game_parameters):
     print("### Current player, relative to self: {}".format(
         observation.cur_player_offset()))
     print("### Observed hands: {}".format(observation.observed_hands()))
+    print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%here here################################33')
     print("### Card knowledge: {}".format(observation.card_knowledge()))
     print("### Discard pile: {}".format(observation.discard_pile()))
     print("### Fireworks: {}".format(observation.fireworks()))

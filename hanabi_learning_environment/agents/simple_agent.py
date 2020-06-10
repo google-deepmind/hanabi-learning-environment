@@ -65,7 +65,7 @@ class SimpleAgent(Agent):
         # If no card is hintable then discard or play.
         if observation['information_tokens'] < self.max_information_tokens:
             for card_index, hint in enumerate(observation['card_knowledge'][0]):
-                if hint['color'] is None and hint['rank'] is None:
+                if hint['color'] is None or hint['rank'] is None:
                     return {'action_type': 'DISCARD', 'card_index': card_index}
         else:
             for card_index, hint in enumerate(observation['card_knowledge'][1]):
@@ -73,4 +73,3 @@ class SimpleAgent(Agent):
                     return {'action_type': 'REVEAL_RANK',
                             'rank': observation['observed_hands'][1][card_index]['rank'],
                             'target_offset': 1}
-        print('################################stop here#########################################')
