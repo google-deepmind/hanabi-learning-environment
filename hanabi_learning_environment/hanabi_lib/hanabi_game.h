@@ -38,6 +38,22 @@ class HanabiGame {
   // hints have been given.
   enum AgentObservationType { kMinimal = 0, kCardKnowledge = 1, kSeer = 2 };
 
+  // Acceptable parameters:
+  //
+  // "players": The number of players. (default 2)
+  //     Value must be in [MinPlayers(), MaxPlayers()].
+  // "colors": The number of colors (suits). (default 5)
+  //     Value must be in [1, kMaxNumColors]
+  // "ranks": The number of ranks. (default 5)
+  //     Value must be in [1, kMaxNumRanks].
+  // "hand_size": The number of cards in each player's hand. (default 5 or 4)
+  // "max_information_tokens": Maximum number of information tokens. (default 8)
+  // "max_life_tokens": Maximum number of life tokens. (default 3)
+  // "seed": Pseudo-random number generator seed. (default -1)
+  // "random_start_player": Whether to randomly pick the starting player.
+  //     (default false)
+  // "observation_type": The type of the observation. (default kCardKnowledge)
+  //     Value must be one of AgentObservationType defined above.
   explicit HanabiGame(
       const std::unordered_map<std::string, std::string>& params);
 
