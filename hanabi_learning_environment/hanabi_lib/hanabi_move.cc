@@ -32,8 +32,12 @@ bool HanabiMove::operator==(const HanabiMove& other_move) const {
     case kRevealRank:
       return TargetOffset() == other_move.TargetOffset() &&
              Rank() == other_move.Rank();
+    case kDealSpecific:
     case kDeal:
       return Color() == other_move.Color() && Rank() == other_move.Rank();
+    case kReturn:
+      return CardIndex() == other_move.CardIndex() &&
+             TargetOffset() == other_move.TargetOffset();
     default:
       return true;
   }
@@ -58,6 +62,16 @@ std::string HanabiMove::ToString() const {
       } else {
         return std::string("(Deal XX)");
       }
+    case kDealSpecific:
+      if (color_ >= 0) {
+        return std::string("(Deal ") + ColorIndexToChar(Color()) +
+               RankIndexToChar(Rank()) + ")";
+      } else {
+        return std::string("(Deal XX)");
+      }
+      case kReturn:
+      return "(Return " +  std::to_string(CardIndex()) + "from Player " +
+             std::to_string(TargetOffset()) + ")";
     default:
       return "(INVALID)";
   }

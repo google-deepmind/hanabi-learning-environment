@@ -87,6 +87,12 @@ HanabiCard HanabiState::HanabiDeck::DealCard(int color, int rank) {
   return HanabiCard(IndexToColor(index), IndexToRank(index));
 }
 
+void HanabiState::HanabiDeck::ReturnCard(int color, int rank) {
+  int index = CardToIndex(color, rank);
+  ++card_count_[index];
+  ++total_count_;
+}
+
 HanabiState::HanabiState(const HanabiGame* parent_game, int start_player)
     : parent_game_(parent_game),
       deck_(*parent_game),
@@ -165,6 +171,7 @@ int HanabiState::PlayerToDeal() const {
 
 bool HanabiState::MoveIsLegal(HanabiMove move) const {
   switch (move.MoveType()) {
+    case HanabiMove::kDealSpecific:
     case HanabiMove::kDeal:
       if (cur_player_ != kChancePlayerId) {
         return false;
@@ -212,6 +219,11 @@ bool HanabiState::MoveIsLegal(HanabiMove move) const {
       }
       break;
     }
+    case HanabiMove::kReturn:
+      if (move.CardIndex() >= hands_[move.TargetOffset()].Cards().size()) {
+        return false;
+      }
+      break;
     default:
       return false;
   }
@@ -220,7 +232,10 @@ bool HanabiState::MoveIsLegal(HanabiMove move) const {
 
 void HanabiState::ApplyMove(HanabiMove move) {
   REQUIRE(MoveIsLegal(move));
-  if (deck_.Empty()) {
+  // Special moves are virtual moves used to manipulate the game.
+  bool special_move = move.MoveType() == HanabiMove::kDealSpecific ||
+                      move.MoveType() == HanabiMove::kReturn;
+  if (deck_.Empty() && !special_move) {
     --turns_to_play_;
   }
   HanabiHistoryItem history(move);
@@ -239,11 +254,20 @@ void HanabiState::ApplyMove(HanabiMove move) {
             card_knowledge);
       }
       break;
+    case HanabiMove::kDealSpecific:
+      hands_[move.TargetOffset()].InsertCard(
+          deck_.DealCard(move.Color(), move.Rank()), move.CardIndex());
+      break;
     case HanabiMove::kDiscard:
       history.information_token = IncrementInformationTokens();
       history.color = hands_[cur_player_].Cards()[move.CardIndex()].Color();
       history.rank = hands_[cur_player_].Cards()[move.CardIndex()].Rank();
       hands_[cur_player_].RemoveFromHand(move.CardIndex(), &discard_pile_);
+      break;
+    case HanabiMove::kReturn:
+      deck_.ReturnCard(hands_[move.TargetOffset()].Cards()[move.CardIndex()].Color()
+                      ,hands_[move.TargetOffset()].Cards()[move.CardIndex()].Rank());
+      hands_[move.TargetOffset()].ReturnFromHand(move.CardIndex());
       break;
     case HanabiMove::kPlay:
       history.color = hands_[cur_player_].Cards()[move.CardIndex()].Color();
@@ -270,7 +294,9 @@ void HanabiState::ApplyMove(HanabiMove move) {
     default:
       std::abort();  // Should not be possible.
   }
-  move_history_.push_back(history);
+  if(!special_move){
+    move_history_.push_back(history);
+  }
   AdvanceToNextPlayer();
 }
 

@@ -165,6 +165,14 @@ int MoveRank(pyhanabi_move_t* move) {
       ->Rank();
 }
 
+bool GetDealSpecificMove(int card_index, int player, int color, int rank,
+                         pyhanabi_move_t* move) {
+  REQUIRE(move != nullptr);
+  move->move = new hanabi_learning_env::HanabiMove(
+      hanabi_learning_env::HanabiMove::kDealSpecific, card_index, player, color, rank);
+  return move->move != nullptr;
+}
+
 bool GetDiscardMove(int card_index, pyhanabi_move_t* move) {
   REQUIRE(move != nullptr);
   move->move = new hanabi_learning_env::HanabiMove(
@@ -176,6 +184,13 @@ bool GetPlayMove(int card_index, pyhanabi_move_t* move) {
   REQUIRE(move != nullptr);
   move->move = new hanabi_learning_env::HanabiMove(
       hanabi_learning_env::HanabiMove::kPlay, card_index, -1, -1, -1);
+  return move->move != nullptr;
+}
+
+bool GetReturnMove(int card_index,int player, pyhanabi_move_t* move) {
+  REQUIRE(move != nullptr);
+  move->move = new hanabi_learning_env::HanabiMove(
+      hanabi_learning_env::HanabiMove::kReturn, card_index, player, -1, -1);
   return move->move != nullptr;
 }
 
