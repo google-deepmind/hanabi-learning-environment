@@ -135,7 +135,7 @@ std::unordered_map<std::string, std::string> ParseArguments(int argc,
         param.size() > prefix_len) {
       std::string value;
       param = param.substr(prefix_len, std::string::npos);
-      auto value_pos = param.find("=");
+      auto value_pos = param.find('=');
       if (value_pos != std::string::npos) {
         value = param.substr(value_pos + 1, std::string::npos);
         param = param.substr(0, value_pos);
