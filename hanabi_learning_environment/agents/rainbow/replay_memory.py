@@ -422,7 +422,7 @@ class OutOfGraphReplayMemory(object):
             self.__dict__[attr] = pickle.load(infile)
 
 
-@gin.configurable(blacklist=['observation_size', 'stack_size'])
+@gin.configurable(denylist=['observation_size', 'stack_size'])
 class WrappedReplayMemory(object):
   """In-graph wrapper for the python replay memory.
 

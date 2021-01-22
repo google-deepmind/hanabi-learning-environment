@@ -169,7 +169,7 @@ class OutOfGraphPrioritizedReplayMemory(replay_memory.OutOfGraphReplayMemory):
     return priority_batch
 
 
-@gin.configurable(blacklist=['observation_size', 'stack_size'])
+@gin.configurable(denylist=['observation_size', 'stack_size'])
 class WrappedPrioritizedReplayMemory(replay_memory.WrappedReplayMemory):
   """In graph wrapper for the python Replay Memory.
 
