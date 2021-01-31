@@ -102,9 +102,13 @@ class HanabiHand {
     return card_knowledge_;
   }
   void AddCard(HanabiCard card, const CardKnowledge& initial_knowledge);
+  // Insert the specified card while maintaining knowledge about the card
+  void InsertCard(HanabiCard card, int card_index);
   // Remove card_index card from hand. Put in discard_pile if not nullptr
   // (pushes the card to the back of the discard_pile vector).
   void RemoveFromHand(int card_index, std::vector<HanabiCard>* discard_pile);
+  // Remove card_index card from hand and put it back into the deck.
+  void ReturnFromHand(int card_index);
   // Make cards with the given rank visible.
   // Returns new information bitmask, bit_i set if card_i color was revealed
   // and was previously unknown.

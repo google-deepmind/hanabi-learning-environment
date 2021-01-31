@@ -35,6 +35,7 @@ class HanabiState {
    public:
     explicit HanabiDeck(const HanabiGame& game);
     // DealCard returns invalid card on failure.
+    void ReturnCard(int color, int rank);
     HanabiCard DealCard(int color, int rank);
     HanabiCard DealCard(std::mt19937* rng);
     int Size() const { return total_count_; }

@@ -84,6 +84,11 @@ void HanabiHand::AddCard(HanabiCard card,
   card_knowledge_.push_back(initial_knowledge);
 }
 
+void HanabiHand::InsertCard(HanabiCard card, int card_index) {
+  REQUIRE(card.IsValid());
+  cards_.insert(cards_.begin() + card_index,card);
+}
+
 void HanabiHand::RemoveFromHand(int card_index,
                                 std::vector<HanabiCard>* discard_pile) {
   if (discard_pile != nullptr) {
@@ -91,6 +96,11 @@ void HanabiHand::RemoveFromHand(int card_index,
   }
   cards_.erase(cards_.begin() + card_index);
   card_knowledge_.erase(card_knowledge_.begin() + card_index);
+}
+
+void HanabiHand::ReturnFromHand(int card_index) {
+  // Adding to deck is handled by ApplyMove in hanabi_state
+  cards_.erase(cards_.begin() + card_index);
 }
 
 uint8_t HanabiHand::RevealColor(const int color) {
