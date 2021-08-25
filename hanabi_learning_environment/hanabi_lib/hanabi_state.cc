@@ -87,7 +87,7 @@ HanabiCard HanabiState::HanabiDeck::DealCard(int color, int rank) {
   return HanabiCard(IndexToColor(index), IndexToRank(index));
 }
 
-HanabiState::HanabiState(const HanabiGame* parent_game, int start_player)
+HanabiState::HanabiState(HanabiGame* parent_game, int start_player)
     : parent_game_(parent_game),
       deck_(*parent_game),
       hands_(parent_game->NumPlayers()),

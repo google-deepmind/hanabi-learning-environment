@@ -68,7 +68,7 @@ class HanabiState {
   // Construct a HanabiState, initialised to the start of the game.
   // If start_player >= 0, the game-provided start player is overridden
   // and the first player after chance is start_player.
-  explicit HanabiState(const HanabiGame* parent_game, int start_player = -1);
+  explicit HanabiState(HanabiGame* parent_game, int start_player = -1);
   // Copy constructor for recursive game traversals using copy + apply-move.
   HanabiState(const HanabiState& state) = default;
 
@@ -99,7 +99,7 @@ class HanabiState {
   int InformationTokens() const { return information_tokens_; }
   const std::vector<HanabiHand>& Hands() const { return hands_; }
   const std::vector<int>& Fireworks() const { return fireworks_; }
-  const HanabiGame* ParentGame() const { return parent_game_; }
+  HanabiGame* ParentGame() const { return parent_game_; }
   const HanabiDeck& Deck() const { return deck_; }
   // Get the discard pile (the element at the back is the most recent discard.)
   const std::vector<HanabiCard>& DiscardPile() const { return discard_pile_; }
@@ -128,7 +128,7 @@ class HanabiState {
   void DecrementInformationTokens();
   void DecrementLifeTokens();
 
-  const HanabiGame* parent_game_ = nullptr;
+  HanabiGame* parent_game_ = nullptr;
   HanabiDeck deck_;
   // Back element of discard_pile_ is most recently discarded card.
   std::vector<HanabiCard> discard_pile_;

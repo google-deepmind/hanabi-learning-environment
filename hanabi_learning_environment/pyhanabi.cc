@@ -311,12 +311,13 @@ void DeleteState(pyhanabi_state_t* state) {
   state->state = nullptr;
 }
 
-const void* StateParentGame(pyhanabi_state_t* state) {
+void StateParentGame(pyhanabi_state_t* state, pyhanabi_game_t* dest_game) {
   REQUIRE(state != nullptr);
   REQUIRE(state->state != nullptr);
-  return static_cast<const void*>(
+  REQUIRE(dest_game != nullptr);
+  dest_game->game =
       reinterpret_cast<hanabi_learning_env::HanabiState*>(state->state)
-          ->ParentGame());
+      ->ParentGame();
 }
 
 void StateApplyMove(pyhanabi_state_t* state, pyhanabi_move_t* move) {

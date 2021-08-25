@@ -111,7 +111,7 @@ int HistoryItemDealToPlayer(pyhanabi_history_item_t* item);
 void NewState(pyhanabi_game_t* game, pyhanabi_state_t* state);
 void CopyState(const pyhanabi_state_t* src, pyhanabi_state_t* dest);
 void DeleteState(pyhanabi_state_t* state);
-const void* StateParentGame(pyhanabi_state_t* state);
+void StateParentGame(pyhanabi_state_t* state, pyhanabi_game_t*dest_game);
 void StateApplyMove(pyhanabi_state_t* state, pyhanabi_move_t* move);
 int StateCurPlayer(pyhanabi_state_t* state);
 void StateDealRandomCard(pyhanabi_state_t* state);

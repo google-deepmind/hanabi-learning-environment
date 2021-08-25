@@ -516,7 +516,8 @@ class HanabiState(object):
       self._game = game.c_game
       lib.NewState(self._game, self._state)
     else:
-      self._game = lib.StateParentGame(c_state)
+      self._game = ffi.new("pyhanabi_game_t*")
+      lib.StateParentGame(c_state, self._game)
       lib.CopyState(c_state, self._state)
 
   def copy(self):
