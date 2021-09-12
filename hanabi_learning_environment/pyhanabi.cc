@@ -16,8 +16,10 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <functional>
 #include <iostream>
 #include <memory>
+#include <numeric>
 #include <string>
 #include <unordered_map>
 
@@ -27,6 +29,7 @@
 #include "hanabi_lib/hanabi_history_item.h"
 #include "hanabi_lib/hanabi_move.h"
 #include "hanabi_lib/hanabi_observation.h"
+#include "hanabi_lib/hanabi_parallel_env.h"
 #include "hanabi_lib/hanabi_state.h"
 #include "hanabi_lib/observation_encoder.h"
 #include "hanabi_lib/util.h"
@@ -568,6 +571,11 @@ int MaxLifeTokens(pyhanabi_game_t* game) {
       ->MaxLifeTokens();
 }
 
+int CardsPerColor(pyhanabi_game_t* game) {
+  return reinterpret_cast<hanabi_learning_env::HanabiGame*>(game->game)
+      ->CardsPerColor();
+}
+
 int ObservationType(pyhanabi_game_t* game) {
   return reinterpret_cast<hanabi_learning_env::HanabiGame*>(game->game)
       ->ObservationType();
@@ -598,6 +606,183 @@ void GetMoveByUid(pyhanabi_game_t* game, int move_uid, pyhanabi_move_t* move) {
 int MaxMoves(pyhanabi_game_t* game) {
   return reinterpret_cast<hanabi_learning_env::HanabiGame*>(game->game)
       ->MaxMoves();
+}
+
+void DeleteParallelEnv(pyhanabi_parallel_env_t* parallel_env) {
+  REQUIRE(parallel_env != nullptr);
+  REQUIRE(parallel_env->parallel_env != nullptr);
+  delete reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
+      parallel_env->parallel_env);
+  parallel_env->parallel_env = nullptr;
+}
+
+void NewParallelEnv(pyhanabi_parallel_env_t* parallel_env,
+                    const int param_list_len,
+                    const char** param_list,
+                    const int n_states) {
+  REQUIRE(parallel_env != nullptr);
+  std::unordered_map<std::string, std::string> game_params;
+
+  for (int p = 0; p < param_list_len; p += 2) {
+    std::string key = param_list[p];
+    std::string value = param_list[p + 1];
+    game_params[key] = value;
+  }
+
+  parallel_env->parallel_env =
+    static_cast<hanabi_learning_env::HanabiParallelEnv*>(
+      new hanabi_learning_env::HanabiParallelEnv(game_params, n_states));
+  REQUIRE(parallel_env->parallel_env != nullptr);
+}
+
+void _ParallelCopyBatchObservation(
+      pyhanabi_batch_observation_t* batch_observation,
+      hanabi_learning_env::HanabiParallelEnv* hanabi_parallel_env,
+      const int agent_id) {
+  REQUIRE(batch_observation->observation != nullptr);
+  REQUIRE(batch_observation->legal_moves != nullptr);
+  REQUIRE(batch_observation->done != nullptr);
+  REQUIRE(batch_observation->scores != nullptr);
+
+  const auto batch_obs = hanabi_parallel_env->ObserveAgent(agent_id);
+  std::copy(batch_obs.observation.begin(), batch_obs.observation.end(),
+      batch_observation->observation);
+  std::copy(batch_obs.legal_moves.begin(), batch_obs.legal_moves.end(),
+      batch_observation->legal_moves);
+  std::copy(batch_obs.scores.begin(), batch_obs.scores.end(),
+      batch_observation->scores);
+  std::copy(batch_obs.done.begin(), batch_obs.done.end(),
+      batch_observation->done);
+}
+
+void ParallelEnvReset(pyhanabi_parallel_env_t* parallel_env) {
+  REQUIRE(parallel_env != nullptr);
+  REQUIRE(parallel_env->parallel_env != nullptr);
+  auto hanabi_parallel_env =
+      reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
+          parallel_env->parallel_env);
+  hanabi_parallel_env->Reset();
+}
+
+void ParallelParentGame(pyhanabi_game_t* parent_game,
+                        const pyhanabi_parallel_env_t* parallel_env) {
+  REQUIRE(parallel_env != nullptr);
+  REQUIRE(parallel_env->parallel_env != nullptr);
+  REQUIRE(parent_game != nullptr);
+  parent_game->game = reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
+      parallel_env->parallel_env)->GetGamePtr();
+  REQUIRE(parent_game->game != nullptr);
+}
+
+int ParallelMaxMoves(const pyhanabi_parallel_env_t* parallel_env) {
+  return reinterpret_cast<const hanabi_learning_env::HanabiParallelEnv*>(
+            parallel_env->parallel_env)->GetGame().MaxMoves();
+}
+
+int ParallelNumStates(const pyhanabi_parallel_env_t* parallel_env) {
+  return reinterpret_cast<const hanabi_learning_env::HanabiParallelEnv*>(
+            parallel_env->parallel_env)->GetNumStates();
+}
+
+int ParallelObservationLength(const pyhanabi_parallel_env_t* parallel_env) {
+  auto obs_shape =
+      reinterpret_cast<const hanabi_learning_env::HanabiParallelEnv*>(
+          parallel_env->parallel_env)->GetObservationShape();
+  return std::accumulate(obs_shape.begin(), obs_shape.end(), 1,
+            std::multiplies<int>());
+}
+
+void ParallelApplyBatchMove(pyhanabi_parallel_env_t* parallel_env,
+                            const int batch_move_len,
+                            const int* batch_move,
+                            const int agent_id) {
+  REQUIRE(parallel_env != nullptr);
+  REQUIRE(parallel_env->parallel_env != nullptr);
+  auto hanabi_parallel_env =
+      reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
+          parallel_env->parallel_env);
+  std::vector<int> vec_batch_move;
+  vec_batch_move.assign(batch_move, batch_move + (batch_move_len));
+  hanabi_parallel_env->ApplyBatchMove(vec_batch_move, agent_id);
+}
+
+void ParallelResetStates(pyhanabi_parallel_env_t* parallel_env,
+                         const int states_len,
+                         const int* states,
+                          const int current_agent_id) {
+  REQUIRE(parallel_env != nullptr);
+  REQUIRE(parallel_env->parallel_env != nullptr);
+  std::vector<int> vec_states;
+  vec_states.assign(states, states + states_len);
+  reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
+      parallel_env->parallel_env)->ResetStates(vec_states, current_agent_id);
+}
+
+void ParallelObserveAgent(pyhanabi_batch_observation_t* batch_observation,
+                          const pyhanabi_parallel_env_t* parallel_env,
+                          const int agent_id) {
+  REQUIRE(parallel_env != nullptr);
+  REQUIRE(parallel_env->parallel_env != nullptr);
+  REQUIRE(batch_observation != nullptr);
+  auto hanabi_parallel_env =
+      reinterpret_cast<hanabi_learning_env::HanabiParallelEnv*>(
+          parallel_env->parallel_env);
+  _ParallelCopyBatchObservation(
+      batch_observation, hanabi_parallel_env, agent_id);
+}
+
+void NewBatchObservation(pyhanabi_batch_observation_t* batch_observation,
+                         const pyhanabi_parallel_env_t* parallel_env) {
+  REQUIRE(batch_observation != nullptr);
+  REQUIRE(parallel_env != nullptr);
+  REQUIRE(parallel_env->parallel_env != nullptr);
+
+  const auto hanabi_parallel_env =
+      reinterpret_cast<const hanabi_learning_env::HanabiParallelEnv*>(
+          parallel_env->parallel_env);
+  const int n_states = hanabi_parallel_env->GetNumStates();
+  const auto obs_shape = hanabi_parallel_env->GetObservationShape();
+  const int obs_len = std::accumulate(obs_shape.begin(), obs_shape.end(), 1,
+      std::multiplies<int>());
+  const int max_moves = hanabi_parallel_env->GetGame().MaxMoves();
+
+  REQUIRE(n_states > 0);
+  REQUIRE(obs_len > 0);
+  REQUIRE(max_moves > 0);
+  batch_observation->observation_shape[0] = n_states;
+  batch_observation->legal_moves_shape[0] = n_states;
+  batch_observation->observation_shape[1] = obs_len;
+  batch_observation->legal_moves_shape[1] = max_moves;
+  REQUIRE(batch_observation->observation_shape[0] == n_states);
+  REQUIRE(batch_observation->legal_moves_shape[0] == n_states);
+  REQUIRE(batch_observation->observation_shape[1] == obs_len);
+  REQUIRE(batch_observation->legal_moves_shape[1] == max_moves);
+
+  batch_observation->observation = (int8_t*) malloc(sizeof(int8_t)
+      * batch_observation->observation_shape[0]
+      * batch_observation->observation_shape[1]);
+  batch_observation->legal_moves = (int8_t*) malloc(sizeof(int8_t)
+      * batch_observation->legal_moves_shape[0]
+      * batch_observation->legal_moves_shape[1]);
+  batch_observation->scores = (int16_t*) malloc(sizeof(int16_t) * n_states);
+  batch_observation->done = (int8_t*) malloc(sizeof(int8_t) * n_states);
+
+  REQUIRE(batch_observation->scores != nullptr);
+  REQUIRE(batch_observation->legal_moves != nullptr);
+  REQUIRE(batch_observation->done != nullptr);
+  REQUIRE(batch_observation->observation != nullptr);
+}
+
+void DeleteBatchObservation(pyhanabi_batch_observation_t* batch_observation) {
+  REQUIRE(batch_observation != nullptr);
+  if (batch_observation->observation != nullptr)
+    free(batch_observation->observation);
+  if (batch_observation->legal_moves != nullptr)
+    free(batch_observation->legal_moves);
+  if (batch_observation->scores != nullptr)
+    free(batch_observation->scores);
+  if (batch_observation->done != nullptr)
+    free(batch_observation->done);
 }
 
 /* Wrapper definitions for HanabiObservation. */
