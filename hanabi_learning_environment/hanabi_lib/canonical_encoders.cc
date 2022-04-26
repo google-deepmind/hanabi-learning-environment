@@ -16,6 +16,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+#include <numeric>
 #include <vector>
 
 #include "canonical_encoders.h"
