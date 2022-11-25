@@ -28,7 +28,11 @@ jobs:
             run: |
               python -m pip install --upgrade pip
               pip install wheel setuptools scikit-build cffi ninja cmake
-              
+          - name: wheel
+            working-directory: ${{env.GITHUB_WORKSPACE}}
+            run:  |
+              pip install wheel cmake-build-extension
+              pip wheel .  --no-deps -w wheel/
 #  deploy:
 #    runs-on: ubuntu-latest
 #
