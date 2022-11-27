@@ -39,6 +39,7 @@ jobs:
             with:
               path: ./wheelhouse/*.whl
   adjust:
+     needs: [build]
      runs-on: ubuntu-latest
      container: quay.io/pypa/manylinux_2_24_x86_64
      steps:
@@ -57,6 +58,7 @@ jobs:
            with:
             path: ./dist/wheelhouse/*.whl                           
   publish:
+      needs: [adjust]
       runs-on: ubuntu-latest      
       steps:
           - name: Download a Build Artifact
