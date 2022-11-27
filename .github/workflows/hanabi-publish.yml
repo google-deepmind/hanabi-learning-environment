@@ -33,7 +33,8 @@ jobs:
             run:  |
               pip install wheel cmake-build-extension auditwheel
               pip wheel .  --no-deps
-              auditwheel repair
+              mywheel=$(ls *.whl)
+              auditwheel repair $mywheel
           - name: Set up Python
             uses: actions/setup-python@v3
             with:
