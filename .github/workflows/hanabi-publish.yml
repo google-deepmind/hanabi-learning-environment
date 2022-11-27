@@ -37,7 +37,8 @@ jobs:
           - name: Upload a Build Artifact
             uses: actions/upload-artifact@v3.1.1
             with:
-              path: ./wheelhouse/*.whl
+              name: wheel
+              path: ./wheelhouse/*.whl              
   adjust:
      needs: [build]
      runs-on: ubuntu-latest
@@ -46,7 +47,7 @@ jobs:
          - name: Download dists
            uses: actions/download-artifact@v3.0.1
            with:
-             name: artifact
+             name: wheel
              path: dist
          - name: wheel   
            working-directory: dist
@@ -56,6 +57,7 @@ jobs:
          - name: Upload a Build Artifact
            uses: actions/upload-artifact@v3.1.1
            with:
+            name: anywheel
             path: ./dist/wheelhouse/*.whl                           
   publish:
       needs: [adjust]
@@ -65,7 +67,7 @@ jobs:
             uses: actions/download-artifact@v3.0.1
             with:
               # Artifact name
-              name: '*many*.whl'
+              name: anywheel
           - name: Publish package
             uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
             with:
