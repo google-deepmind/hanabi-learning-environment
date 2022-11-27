@@ -47,6 +47,12 @@ jobs:
            with:
              name: artifact
              path: dist
+         - name: wheel   
+           working-directory: dist
+           run:  |
+              mywheel=$(ls *.whl)
+              auditwheel repair $mywheel
+                           
 #  publish:
 #      runs-on: ubuntu-latest      
 #      steps:
