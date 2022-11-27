@@ -31,8 +31,9 @@ jobs:
           - name: wheel
             working-directory: ${{env.GITHUB_WORKSPACE}}
             run:  |
-              pip install wheel cmake-build-extension
-              pip wheel .  --no-deps -w wheel/
+              pip install wheel cmake-build-extension auditwheel
+              pip wheel .  --no-deps
+              auditwheel repair
           - name: Set up Python
             uses: actions/setup-python@v3
             with:
