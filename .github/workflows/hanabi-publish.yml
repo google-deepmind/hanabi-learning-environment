@@ -21,47 +21,56 @@ jobs:
           - uses: actions/checkout@v3
           - name: build
             run: |
-              python -m pip install --upgrade pip
-              pip install wheel setuptools scikit-build cffi ninja cmake
-          - name: wheel
-            working-directory: ${{env.GITHUB_WORKSPACE}}
-            run:  |
-              pip install wheel cmake-build-extension auditwheel
-              pip wheel .  --no-deps -w wheelhouse/
-
+              python3 -m pip install --upgrade build
+              python3 -m build
           - name: Upload a Build Artifact
             uses: actions/upload-artifact@v3.1.1
             with:
-              name: wheel
-              path: ./wheelhouse/*.whl              
-  adjust:
-     needs: [build]
-     runs-on: ubuntu-latest
-     container: quay.io/pypa/manylinux_2_24_x86_64
-     steps:
-         - name: Download dists
-           uses: actions/download-artifact@v3.0.1
-           with:
-             name: wheel
-             path: dist
-         - name: wheel   
-           working-directory: dist
-           run:  |
-              mywheel=$(ls *.whl)
-              auditwheel repair $mywheel
-         - name: Upload a Build Artifact
-           uses: actions/upload-artifact@v3.1.1
-           with:
-            name: anywheel
-            path: ./dist/wheelhouse/*.whl                           
+              name: dist
+              path: ./dist
+#          - name: build
+#            run: |
+#              python -m pip install --upgrade pip
+#              pip install wheel setuptools scikit-build cffi ninja cmake
+#          - name: wheel
+#            working-directory: ${{env.GITHUB_WORKSPACE}}
+#            run:  |
+#              pip install wheel cmake-build-extension auditwheel
+#              pip wheel .  --no-deps -w wheelhouse/
+
+#          - name: Upload a Build Artifact
+#            uses: actions/upload-artifact@v3.1.1
+#            with:
+#              name: wheel
+#              path: ./wheelhouse/*.whl              
+#  adjust:
+#     needs: [build]
+#     runs-on: ubuntu-latest
+#     container: quay.io/pypa/manylinux_2_24_x86_64
+#     steps:
+#         - name: Download dists
+#           uses: actions/download-artifact@v3.0.1
+#           with:
+#             name: wheel
+#             path: dist
+#         - name: wheel   
+#           working-directory: dist
+#           run:  |
+#              mywheel=$(ls *.whl)
+#              auditwheel repair $mywheel
+#         - name: Upload a Build Artifact
+#           uses: actions/upload-artifact@v3.1.1
+#           with:
+#            name: anywheel
+#            path: ./dist/wheelhouse/*.whl                           
   publish:
-      needs: [adjust]
+      needs: [build]
       runs-on: ubuntu-latest      
       steps:
           - name: Download a Build Artifact
             uses: actions/download-artifact@v3.0.1
             with:
-              name: anywheel
+              name: dist
               path: dist
           - name: Publish package
             uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
