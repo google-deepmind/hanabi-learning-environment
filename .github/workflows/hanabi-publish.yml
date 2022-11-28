@@ -26,7 +26,7 @@ jobs:
           - name: Upload a Build Artifact
             uses: actions/upload-artifact@v3.1.1
             with:
-              name: dist
+              name: build
               path: ./dist
 #          - name: build
 #            run: |
@@ -43,28 +43,28 @@ jobs:
 #            with:
 #              name: wheel
 #              path: ./wheelhouse/*.whl              
-#  adjust:
-#     needs: [build]
-#     runs-on: ubuntu-latest
-#     container: quay.io/pypa/manylinux_2_24_x86_64
-#     steps:
-#         - name: Download dists
-#           uses: actions/download-artifact@v3.0.1
-#           with:
-#             name: wheel
-#             path: dist
-#         - name: wheel   
-#           working-directory: dist
-#           run:  |
-#              mywheel=$(ls *.whl)
-#              auditwheel repair $mywheel
-#         - name: Upload a Build Artifact
-#           uses: actions/upload-artifact@v3.1.1
-#           with:
-#            name: anywheel
-#            path: ./dist/wheelhouse/*.whl                           
+  repair:
+     needs: [build]
+     runs-on: ubuntu-latest
+     container: quay.io/pypa/manylinux_2_24_x86_64
+     steps:
+         - name: Download dists
+           uses: actions/download-artifact@v3.0.1
+           with:
+             name: build
+             path: dist
+         - name: wheel   
+           working-directory: dist
+           run:  |
+              mywheel=$(ls *.whl)
+              auditwheel repair $mywheel
+         - name: Upload a Build Artifact
+           uses: actions/upload-artifact@v3.1.1
+           with:
+            name: dist
+            path: ./dist/wheelhouse/*.whl                           
   publish:
-      needs: [build]
+      needs: [repair]
       runs-on: ubuntu-latest      
       steps:
           - name: Download a Build Artifact
