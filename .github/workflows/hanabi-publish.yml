@@ -27,6 +27,7 @@ jobs:
          - name: Store src
            uses: actions/upload-artifact@v2
            with:
+            name: dist
             path: dist/*.tar.gz  
   publish:
       needs: [build]
