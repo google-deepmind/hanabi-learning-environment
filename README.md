@@ -1,5 +1,7 @@
 This is not an officially supported Google product.
 
+Every change in the Hanabi Framework in this Repo (not in HGTS). 
+
 hanabi\_learning\_environment is a research platform for Hanabi experiments. The file rl\_env.py provides an RL environment using an API similar to OpenAI Gym. A lower level game interface is provided in pyhanabi.py for non-RL methods like Monte Carlo tree search.
 
 ### Getting started
