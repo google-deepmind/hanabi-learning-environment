@@ -7,14 +7,14 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.encoding.observationencoding import ObservationVector
+from bad.encoding.observationencoding import Observation
 
-class ObservationToVectorConverter:
+class ObservationConverter:
 
     '''
     one hot encoding
     '''
-    def Convert(self, observation: dict) -> ObservationVector:
+    def Convert(self, observation: dict) -> Observation:
 
         lifeTokens: int = observation['life_tokens']
         lifeTokensLeft: np.ndarray = tf.keras.utils.to_categorical(lifeTokens, num_classes=4, dtype=int)
@@ -23,4 +23,4 @@ class ObservationToVectorConverter:
         informationTokensLeft: np.ndarray = tf.keras.utils.to_categorical(informationTokens, num_classes=9, dtype=int)
         
         
-        return ObservationVector(lifeTokensLeft, informationTokensLeft)
+        return Observation(lifeTokensLeft, informationTokensLeft)

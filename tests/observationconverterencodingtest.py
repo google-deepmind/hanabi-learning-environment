@@ -7,17 +7,17 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.encoding.observationconverter import ObservationToVectorConverter
+from bad.encoding.observationconverter import ObservationConverter
 
-class TestObservationToVectorConverter(unittest.TestCase):
+class ObservationConverterEncodingTest(unittest.TestCase):
 
-    def test_gametovectorconverterhaseverything(self):
+    def test_converterhaseverything(self):
         
         observation = {}
         observation['life_tokens'] = 3
         observation['information_tokens'] = 8
 
-        converter = ObservationToVectorConverter()
+        converter = ObservationConverter()
         gamevector = converter.Convert(observation)
         
         expectedLifeTokensLeft = np.zeros(shape=4, dtype=int)
@@ -29,13 +29,13 @@ class TestObservationToVectorConverter(unittest.TestCase):
         self.assertTrue(np.array_equal(gamevector.lifeTokensLeft, expectedLifeTokensLeft))
         self.assertTrue(np.array_equal(gamevector.hintTokensLeft, expectedHintTokensLeft))
 
-    def test_gametovectorconverterhasnothing(self):
+    def test_converterhasnothing(self):
         
         observation = {}
         observation['life_tokens'] = 0
         observation['information_tokens'] = 0
 
-        converter = ObservationToVectorConverter()
+        converter = ObservationConverter()
         gamevector = converter.Convert(observation)
         
         expectedLifeTokensLeft = np.zeros(shape=4, dtype=int)
