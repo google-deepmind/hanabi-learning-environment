@@ -9,7 +9,7 @@ setup(
     long_description_content_type="text/markdown",
     author='ws2223-group7/hanabi-learning-environment_bad',
     packages=find_packages(),
-    install_requires=['cffi'],
+    install_requires=['cffi', 'tensorfow'],
     python_requires=">=3.6",
     classifiers = [
     "Programming Language :: Python :: 3",
