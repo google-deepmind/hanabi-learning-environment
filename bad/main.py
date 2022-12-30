@@ -9,8 +9,8 @@ sys.path.append(parentPath)
 
 from bad.runner import Runner
 
-def main():
-    print('welcome to bad agent with tf version:', tf.__version__)
+def main() -> None:
+    print(f'welcome to bad agent with tf version: {tf.__version__}')
     runner = Runner()
     runner.train(1)
     runner.run(10)
