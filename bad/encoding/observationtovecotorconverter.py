@@ -21,4 +21,6 @@ class ObservationToVectorConverter:
 
         informationTokens: int = observation['information_tokens']
         informationTokensLeft: np.ndarray = tf.keras.utils.to_categorical(informationTokens, num_classes=9, dtype=int)
+        
+        
         return ObservationVector(lifeTokensLeft, informationTokensLeft)
