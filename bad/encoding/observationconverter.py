@@ -7,7 +7,7 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.encoding.observationencoding import Observation
+from bad.encoding.observation import Observation
 
 class ObservationConverter:
 
