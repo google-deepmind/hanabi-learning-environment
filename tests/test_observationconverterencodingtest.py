@@ -26,6 +26,8 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         observation['fireworks']['W'] = 5
         observation['fireworks']['Y'] = 5
 
+        observation['current_player'] = 1
+
         expected_lt_left = np.zeros(shape=4, dtype=int)
         expected_lt_left[3] = 1
 
@@ -47,8 +49,11 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         expected_fw_yellow = np.zeros(shape=6, dtype=int)
         expected_fw_yellow[5] = 1
 
-        converter = ObservationConverter(observation)
-        obs: Observation = converter.convert()
+        expected_cur_player = np.zeros(shape=2, dtype=int)
+        expected_cur_player[1] = 1
+
+        converter = ObservationConverter()
+        obs: Observation = converter.convert(observation)
 
         self.assertTrue(np.array_equal(obs.public_features.life_tokens_left, \
             expected_lt_left))
@@ -66,6 +71,8 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         self.assertTrue(np.array_equal(obs.public_features.firework.yellow, \
             expected_fw_yellow))
 
+        self.assertTrue(np.array_equal(obs.public_features.current_player, expected_cur_player))
+
     def test_converterhasnothing(self):
         ''' convert has nothing '''
         observation = {}
@@ -78,6 +85,8 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         observation['fireworks']['R'] = 0
         observation['fireworks']['W'] = 0
         observation['fireworks']['Y'] = 0
+
+        observation['current_player'] = 0
 
         expected_lt_left = np.zeros(shape=4, dtype=int)
         expected_lt_left[0] = 1
@@ -100,24 +109,29 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         expectedfireworkrankyellow = np.zeros(shape=6, dtype=int)
         expectedfireworkrankyellow[0] = 1
 
-        converter = ObservationConverter(observation)
-        gamevector = converter.convert()
+        expected_cur_player = np.zeros(shape=2, dtype=int)
+        expected_cur_player[0] = 1
 
-        self.assertTrue(np.array_equal(gamevector.public_features.life_tokens_left, \
+        converter = ObservationConverter()
+        obs = converter.convert(observation)
+
+        self.assertTrue(np.array_equal(obs.public_features.life_tokens_left, \
             expected_lt_left))
-        self.assertTrue(np.array_equal(gamevector.public_features.hint_tokens_left, \
+        self.assertTrue(np.array_equal(obs.public_features.hint_tokens_left, \
             expected_ht_left))
 
-        self.assertTrue(np.array_equal(gamevector.public_features.firework.red, \
+        self.assertTrue(np.array_equal(obs.public_features.firework.red, \
             expectedfireworkrankred))
-        self.assertTrue(np.array_equal(gamevector.public_features.firework.green, \
+        self.assertTrue(np.array_equal(obs.public_features.firework.green, \
             expectedfireworkrankgreen))
-        self.assertTrue(np.array_equal(gamevector.public_features.firework.blue, \
+        self.assertTrue(np.array_equal(obs.public_features.firework.blue, \
             expectedfireworkrankblue))
-        self.assertTrue(np.array_equal(gamevector.public_features.firework.white, \
+        self.assertTrue(np.array_equal(obs.public_features.firework.white, \
             expectedfireworkrankwhite))
-        self.assertTrue(np.array_equal(gamevector.public_features.firework.yellow, \
+        self.assertTrue(np.array_equal(obs.public_features.firework.yellow, \
             expectedfireworkrankyellow))
+
+        self.assertTrue(np.array_equal(obs.public_features.current_player, expected_cur_player))
 
     def test_differentfireworks(self):
         ''' test different fireworks '''
@@ -131,6 +145,8 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         observation['fireworks']['R'] = 3
         observation['fireworks']['W'] = 4
         observation['fireworks']['Y'] = 5
+
+        observation['current_player'] = 1
 
         expectedfireworkrankblue = np.zeros(shape=6, dtype=int)
         expectedfireworkrankblue[1] = 1
@@ -147,8 +163,8 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         expectedfireworkrankyellow = np.zeros(shape=6, dtype=int)
         expectedfireworkrankyellow[5] = 1
 
-        converter = ObservationConverter(observation)
-        obs: Observation = converter.convert()
+        converter = ObservationConverter()
+        obs: Observation = converter.convert(observation)
 
         self.assertTrue(np.array_equal(obs.public_features.firework.red, \
             expected_fw_red))
