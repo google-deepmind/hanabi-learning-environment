@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error
 import string
 import sys
 import os
@@ -11,33 +12,36 @@ sys.path.append(parentPath)
 from bad.encoding.observation import Observation
 
 class ObservationConverter:
-
+    ''' converting hanabi observation to vector observation '''
     def __init__(self, observation: dict) -> None:
         self.observation = observation
 
-    '''
-    one hot encoding
-    '''
-    def Convert(self) -> Observation:
+    def convert(self) -> Observation:
+        ''' one hot encoding '''
 
-        lifeTokensLeft = self.GetLifeTokens()
-        informationTokensLeft = self.GetInformationTokens()
-        fireworkrankred = self.GetFireWorkRankColor('R')
-        fireworkrankyellow = self.GetFireWorkRankColor('Y')
-        fireworkrankgreen = self.GetFireWorkRankColor('G')
-        fireworkrankwhite = self.GetFireWorkRankColor('W')
-        fireworkrankblue = self.GetFireWorkRankColor('B')
+        life_tokens_left = self.convert_life_tokens()
+        information_tokens_left = self.convert_information_tokens()
+        firework_rank_red = self.convert_firework_rank_color('R')
+        firework_rank_yellow = self.convert_firework_rank_color('Y')
+        firework_rank_green = self.convert_firework_rank_color('G')
+        firework_rank_white = self.convert_firework_rank_color('W')
+        firework_rank_blue = self.convert_firework_rank_color('B')
 
-        return Observation(lifeTokensLeft, informationTokensLeft, fireworkrankred, fireworkrankyellow, fireworkrankgreen, fireworkrankwhite, fireworkrankblue)
+        return Observation(life_tokens_left, information_tokens_left, \
+        firework_rank_red, firework_rank_yellow, firework_rank_green, \
+        firework_rank_white, firework_rank_blue)
 
-    def GetLifeTokens(self) -> np.ndarray:
-        lifeTokens: int = self.observation['life_tokens']
-        return tf.keras.utils.to_categorical(lifeTokens, num_classes=4, dtype=int)
+    def convert_life_tokens(self) -> np.ndarray:
+        ''' convert life tokens '''
+        life_tokens: int = self.observation['life_tokens']
+        return tf.keras.utils.to_categorical(life_tokens, num_classes=4, dtype=int)
 
-    def GetInformationTokens(self) -> np.ndarray:
-        informationTokens: int = self.observation['information_tokens']
-        return tf.keras.utils.to_categorical(informationTokens, num_classes=9, dtype=int)
+    def convert_information_tokens(self) -> np.ndarray:
+        ''' convert information tokens '''
+        information_tokens: int = self.observation['information_tokens']
+        return tf.keras.utils.to_categorical(information_tokens, num_classes=9, dtype=int)
 
-    def GetFireWorkRankColor(self, color: string) -> np.ndarray:
-        rank = self.observation['fireworks'][color];
+    def convert_firework_rank_color(self, color: string) -> np.ndarray:
+        ''' convert firework rank color '''
+        rank = self.observation['fireworks'][color]
         return tf.keras.utils.to_categorical(rank, num_classes=6, dtype=int)

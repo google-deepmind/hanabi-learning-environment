@@ -1,10 +1,13 @@
+# pylint: disable=missing-module-docstring
 import numpy as np
 
 
 class FireworkRank:
-    def __init__(self, red:np.ndarray, yellow:np.ndarray, green:np.ndarray, white:np.ndarray, blue:np.ndarray) -> None:
-        self.Red = red
-        self.Yellow = yellow
-        self.Green = green
-        self.White = white
-        self.Blue = blue
+    ''' firework rank '''
+    def __init__(self, red:np.ndarray, yellow:np.ndarray, \
+         green:np.ndarray, white:np.ndarray, blue:np.ndarray) -> None:
+        self.red = red
+        self.yellow = yellow
+        self.green = green
+        self.white = white
+        self.blue = blue

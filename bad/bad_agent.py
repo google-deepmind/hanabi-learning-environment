@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error
 import sys
 import os
 
@@ -6,9 +7,12 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from hanabi_learning_environment.rl_env import Agent
-from bad.actionnetwork import ActionNetwork
 
 class BadAgent(Agent):
+    ''' bad agent '''
     def __init__(self) -> None:
-        self.actionNetwork = ActionNetwork()
-        self.actionNetwork.build()
+        print('init')
+    def reset(self, config):
+        print('reset')
+    def act(self, observation):
+        print('act')

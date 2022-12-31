@@ -1,15 +1,12 @@
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error
 import sys
 import os
-
-from keras.models import Sequential
 
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.actionnetworkbase import ActionNetworkBase
-
-class ActionNetwork(ActionNetworkBase):
-    
+class ActionNetwork():
+    ''' action network '''
     def build(self) -> None:
-        model = Sequential()
+        '''build'''

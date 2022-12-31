@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error
 import sys
 import os
 import numpy as np
@@ -9,6 +10,9 @@ sys.path.append(parentPath)
 from bad.encoding.publicfeatures import PublicFeatures
 
 class Observation:
-
-    def __init__(self, lifeTokensLeft : np.ndarray, hintTokensLeft: np.ndarray, red:np.ndarray, yellow:np.ndarray, green:np.ndarray, white:np.ndarray, blue:np.ndarray):
-        self.PublicFeatures = PublicFeatures(lifeTokensLeft, hintTokensLeft, red, yellow, green, white, blue)
+    '''observation'''
+    def __init__(self, life_tokens_left : np.ndarray, hint_tokens_left: np.ndarray,\
+        red:np.ndarray, yellow:np.ndarray, green:np.ndarray, white:np.ndarray,\
+        blue:np.ndarray):
+        self.public_features = PublicFeatures(life_tokens_left, hint_tokens_left, \
+            red, yellow, green, white, blue)
