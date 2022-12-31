@@ -18,6 +18,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pylint
+    - name: Install hanabi dependencies
+      run: |
+        pip install numpy tensorflow gin-config scikit-build        
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py' ':!:hanabi_learning_environment/*' ':!:examples/*')
