@@ -24,3 +24,6 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py' ':!:hanabi_learning_environment/*' ':!:examples/*')
+    - name: running tests
+      run: |
+        python -m unittest
