@@ -10,3 +10,8 @@ class ActionNetwork():
     ''' action network '''
     def build(self) -> None:
         '''build'''
+        print('building network')
+
+    def train(self) -> None:
+        '''train'''
+        print('traning network')

@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring
+# pylint: disable=missing-module-docstring too-few-public-methods too-many-arguments
 import numpy as np
 
 
