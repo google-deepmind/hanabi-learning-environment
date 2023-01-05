@@ -9,9 +9,9 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 
-from bad.encoding.rank import Rank
+from bad.encoding.ranktointconverter import RankToIntConverter
 
-class FireworkRank(Rank):
+class FireworkRank():
     ''' firework rank '''
     def __init__(self, observation: dict) -> None:
         '''init'''
@@ -26,4 +26,5 @@ class FireworkRank(Rank):
     def convert_firework_rank_color(self, color: string) -> np.ndarray:
         ''' convert firework rank color '''
         rank = self.observation['fireworks'][color]
-        return self.convert(rank)
+        rank_converter = RankToIntConverter()
+        return rank_converter.convert(rank)

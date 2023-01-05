@@ -12,6 +12,6 @@ class ActionNetwork():
         '''build'''
         print('building network')
 
-    def train(self) -> None:
+    def train(self) -> int:
         '''train'''
         print('traning network')

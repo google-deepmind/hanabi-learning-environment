@@ -4,12 +4,11 @@ import os
 import numpy as np
 import tensorflow as tf
 
-from bad.encoding.fireworkrank import FireworkRank
-
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
+from bad.encoding.fireworkrank import FireworkRank
 
 class PublicFeatures:
     '''public features'''
@@ -22,6 +21,8 @@ class PublicFeatures:
         self.current_player = self.convert_current_player()
 
         self.firework = FireworkRank(observation)
+
+        # todo: last action
 
     def convert_life_tokens(self) -> np.ndarray:
         ''' convert life tokens '''
