@@ -12,7 +12,7 @@ from bad.encoding.colortointconverter import ColorToIntConverter
 
 class Card:
     '''card'''
-    def __init__(self, rank: int, color: string) -> None:
+    def __init__(self, color: string, rank: int) -> None:
         rank_converter: RankToIntConverter = RankToIntConverter()
         self.rank = rank_converter.convert(rank)
         color_converter: ColorToIntConverter = ColorToIntConverter()
