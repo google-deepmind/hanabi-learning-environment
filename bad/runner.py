@@ -15,7 +15,7 @@ class Runner:
         '''train'''
         network: ActionNetwork = ActionNetwork()
         network.build()
-        
+
         for episode in range(episodes):
             print(f"begin training for {episode}")
             train: TrainEpoch = TrainEpoch(network)

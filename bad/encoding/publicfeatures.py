@@ -22,8 +22,6 @@ class PublicFeatures:
 
         self.firework = FireworkRank(observation)
 
-        # todo: last action
-
     def convert_life_tokens(self) -> np.ndarray:
         ''' convert life tokens '''
         life_tokens: int = self.observation['life_tokens']

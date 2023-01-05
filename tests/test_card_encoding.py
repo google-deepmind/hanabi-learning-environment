@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error too-many-locals too-many-statements
 import unittest
 import sys
 import os
@@ -123,7 +123,7 @@ class TestCards(unittest.TestCase):
         self.assertTrue(np.array_equal(white_card_two.rank,   expected_white_card_two_rank))
         self.assertTrue(np.array_equal(white_card_three.rank, expected_white_card_three_rank))
         self.assertTrue(np.array_equal(white_card_four.rank,  expected_white_card_four_rank))
-        self.assertTrue(np.array_equal(white_card_five.rank,  expected_white_card_five_rank))  
+        self.assertTrue(np.array_equal(white_card_five.rank,  expected_white_card_five_rank))
 
         self.assertTrue(np.array_equal(blue_card_one.rank,   expected_blue_card_blue_rank))
         self.assertTrue(np.array_equal(blue_card_two.rank,   expected_blue_card_two_rank))
