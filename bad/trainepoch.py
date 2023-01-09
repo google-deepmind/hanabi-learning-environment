@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-few-public-methods
 import sys
 import os
 
@@ -12,14 +12,21 @@ from bad.actionnetwork import ActionNetwork
 
 class TrainEpoch:
     '''train epoch'''
-    def run(self, network: ActionNetwork) -> None:
+    def __init__(self) -> None:
+        pass
+    def train(self) -> None:
         '''train within an environment'''
+        network: ActionNetwork = ActionNetwork()
+        network.build()
+
         players:int = 2
         hanabi_environment = rl_env.make('Hanabi-Full', players, \
             pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
 
-        hanabi_observation = self.environment.reset()
-        vector_observation: Observation = Observation(hanabi_observation)
-        move = network.train()
+        print(f'created environment with score: {hanabi_environment.state.score} ') #pylint
 
-        self.env.step(move)
+        hanabi_observation = self.environment.reset()
+        encoded_observation: Observation = Observation(hanabi_observation)
+        network.train_observation(encoded_observation)
+
+        # self.env.step(move)

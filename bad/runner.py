@@ -7,19 +7,16 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from bad.trainepoch import TrainEpoch
-from bad.actionnetwork import ActionNetwork
 
 class Runner:
     '''runner'''
+
     def train(self, episodes: int) -> None:
         '''train'''
-        network: ActionNetwork = ActionNetwork()
-        network.build()
-
         for episode in range(episodes):
             print(f"begin training for {episode}")
-            train: TrainEpoch = TrainEpoch(network)
-            train.run(network)
+            train_epoch = TrainEpoch()
+            train_epoch.train()
 
     def run(self, episodes: int) -> None:
         '''run'''

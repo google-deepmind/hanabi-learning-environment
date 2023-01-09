@@ -13,13 +13,15 @@ class Hands():
     def __init__(self, observation: dict) -> None:
         # observation['current_player']
         curr_player_id:int = observation['current_player']
+        print(f'current player id {curr_player_id}')
 
         self.own_cards = []
-        own_cards = observation['player_observations'][curr_player_id]['card_knowledge'][0]
-        for card in own_cards:
+        own_hand = observation['observed_hands'][0]
+        for card in own_hand:
             self.own_cards.append(Card(card['color'], card['rank']))
 
         self.other_cards = []
-        other_cards = observation['player_observations'][curr_player_id]['card_knowledge'][1]
-        for card in other_cards:
-            self.other_cards.append(Card(card['color'], card['rank']))
+        other_hands = observation['observed_hands'][1:4]
+        for other_hand in other_hands:
+            for card in other_hand:
+                self.other_cards.append(Card(card['color'], card['rank']))
