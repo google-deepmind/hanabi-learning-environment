@@ -1,10 +1,17 @@
-# pylint: disable=missing-module-docstring too-few-public-methods too-many-arguments
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error too-few-public-methods too-many-arguments
 import string
+import sys
+import os
 import numpy as np
-import tensorflow as tf
+
+currentPath = os.path.dirname(os.path.realpath(__file__))
+parentPath = os.path.dirname(currentPath)
+sys.path.append(parentPath)
 
 
-class FireworkRank:
+from bad.encoding.ranktointconverter import RankToIntConverter
+
+class FireworkRank():
     ''' firework rank '''
     def __init__(self, observation: dict) -> None:
         '''init'''
@@ -19,4 +26,5 @@ class FireworkRank:
     def convert_firework_rank_color(self, color: string) -> np.ndarray:
         ''' convert firework rank color '''
         rank = self.observation['fireworks'][color]
-        return tf.keras.utils.to_categorical(rank, num_classes=6, dtype=int)
+        rank_converter = RankToIntConverter()
+        return rank_converter.convert(rank)

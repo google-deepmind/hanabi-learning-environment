@@ -4,12 +4,11 @@ import os
 import numpy as np
 import tensorflow as tf
 
-from bad.encoding.fireworkrank import FireworkRank
-
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
+from bad.encoding.fireworkrank import FireworkRank
 
 class PublicFeatures:
     '''public features'''
