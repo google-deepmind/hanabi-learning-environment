@@ -16,6 +16,7 @@ class FireworkRank():
     def __init__(self, observation: dict) -> None:
         '''init'''
         self.observation = observation
+        self.current_player = observation['current_player']
 
         self.red = self.convert_firework_rank_color('R')
         self.yellow = self.convert_firework_rank_color('Y')
@@ -25,6 +26,6 @@ class FireworkRank():
 
     def convert_firework_rank_color(self, color: string) -> np.ndarray:
         ''' convert firework rank color '''
-        rank = self.observation['fireworks'][color]
+        rank = self.observation['player_observations'][self.current_player]['fireworks'][color]
         rank_converter = RankToIntConverter()
         return rank_converter.convert(rank)
