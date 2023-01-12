@@ -2,7 +2,6 @@
 import random
 import sys
 import os
-import numpy as np
 
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
@@ -24,7 +23,7 @@ class TrainEpoch:
         network.build()
 
         hanabi_observation = self.hanabi_environment.reset()
-        
+
         done = False
         while not done:
 
