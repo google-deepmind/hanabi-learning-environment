@@ -12,7 +12,7 @@ class PrivateFeatures:
     '''private features'''
     def __init__(self, observation: dict) -> None:
         '''init'''
-        self.observation = observation   
+        self.observation = observation
         self.hands = self.convert_hands()
 
     def convert_hands(self) -> Hands:
