@@ -15,6 +15,7 @@ class PublicFeatures:
     def __init__(self, observation: dict) -> None:
         '''init'''
         self.observation = observation
+        self.current_player = observation['current_player']
 
         self.life_tokens_left = self.convert_life_tokens()
         self.hint_tokens_left = self.convert_information_tokens()
@@ -24,15 +25,14 @@ class PublicFeatures:
 
     def convert_life_tokens(self) -> np.ndarray:
         ''' convert life tokens '''
-        life_tokens: int = self.observation['life_tokens']
+        life_tokens = self.observation['player_observations'][self.current_player]['life_tokens']
         return tf.keras.utils.to_categorical(life_tokens, num_classes=4, dtype=int)
 
     def convert_information_tokens(self) -> np.ndarray:
         ''' convert information tokens '''
-        information_tokens: int = self.observation['information_tokens']
-        return tf.keras.utils.to_categorical(information_tokens, num_classes=9, dtype=int)
+        in_to = self.observation['player_observations'][self.current_player]['information_tokens']
+        return tf.keras.utils.to_categorical(in_to, num_classes=9, dtype=int)
 
     def convert_current_player(self):
         '''converts current player'''
-        current_player:int = self.observation['current_player']
-        return tf.keras.utils.to_categorical(current_player, num_classes=2, dtype=int)
+        return tf.keras.utils.to_categorical(self.current_player, num_classes=2, dtype=int)

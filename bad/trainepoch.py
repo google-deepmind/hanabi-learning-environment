@@ -1,4 +1,5 @@
 # pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-few-public-methods
+import random
 import sys
 import os
 
@@ -13,20 +14,26 @@ from bad.actionnetwork import ActionNetwork
 class TrainEpoch:
     '''train epoch'''
     def __init__(self) -> None:
-        pass
+        players:int = 2
+        self.hanabi_environment = rl_env.make('Hanabi-Full', players, \
+            pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
     def train(self) -> None:
         '''train within an environment'''
         network: ActionNetwork = ActionNetwork()
         network.build()
 
-        players:int = 2
-        hanabi_environment = rl_env.make('Hanabi-Full', players, \
-            pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
+        hanabi_observation = self.hanabi_environment.reset()
 
-        print(f'created environment with score: {hanabi_environment.state.score} ') #pylint
+        done = False
+        while not done:
 
-        hanabi_observation = self.environment.reset()
-        encoded_observation: Observation = Observation(hanabi_observation)
-        network.train_observation(encoded_observation)
+            legal_actions = self.hanabi_environment.state.legal_moves()
+            action = random.choice(legal_actions)
+            action_int: int = self.hanabi_environment.game.get_move_uid(action)
 
-        # self.env.step(move)
+            encoded_observation: Observation = Observation(hanabi_observation)
+            network.train_observation(encoded_observation)
+            _, _, done, _ = self.hanabi_environment.step(action_int)
+
+        print(f'finish: {self.hanabi_environment.state}')
+        print(f'score: {self.hanabi_environment.state.score}')

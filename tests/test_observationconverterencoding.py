@@ -15,18 +15,23 @@ class ObservationConverterEncodingTest(unittest.TestCase):
     ''' observation converter '''
     def test_convert_public_features_haseverything(self):
         ''' test convert everything '''
+        current_player = 1
         observation = {}
-        observation['life_tokens'] = 3
-        observation['information_tokens'] = 8
+        observation['current_player'] = current_player
 
-        observation['fireworks'] = {}
-        observation['fireworks']['B'] = 5
-        observation['fireworks']['G'] = 5
-        observation['fireworks']['R'] = 5
-        observation['fireworks']['W'] = 5
-        observation['fireworks']['Y'] = 5
+        observation['player_observations'] = {}
+        observation['player_observations'][current_player] = {}
 
-        observation['current_player'] = 1
+        observation['player_observations'][current_player]['life_tokens'] = 3
+        observation['player_observations'][current_player]['information_tokens'] = 8
+
+
+        observation['player_observations'][current_player]['fireworks'] = {}
+        observation['player_observations'][current_player]['fireworks']['B'] = 5
+        observation['player_observations'][current_player]['fireworks']['G'] = 5
+        observation['player_observations'][current_player]['fireworks']['R'] = 5
+        observation['player_observations'][current_player]['fireworks']['W'] = 5
+        observation['player_observations'][current_player]['fireworks']['Y'] = 5
 
         expected_lt_left = np.zeros(shape=4, dtype=int)
         expected_lt_left[3] = 1
@@ -74,18 +79,22 @@ class ObservationConverterEncodingTest(unittest.TestCase):
 
     def test_test_convert_public_features_hasnothing(self):
         ''' convert has nothing '''
+        current_player = 0
         observation = {}
-        observation['life_tokens'] = 0
-        observation['information_tokens'] = 0
+        observation['current_player'] = current_player
 
-        observation['fireworks'] = {}
-        observation['fireworks']['B'] = 0
-        observation['fireworks']['G'] = 0
-        observation['fireworks']['R'] = 0
-        observation['fireworks']['W'] = 0
-        observation['fireworks']['Y'] = 0
+        observation['player_observations'] = {}
+        observation['player_observations'][current_player] = {}
 
-        observation['current_player'] = 0
+        observation['player_observations'][current_player]['life_tokens'] = 0
+        observation['player_observations'][current_player]['information_tokens'] = 0
+
+        observation['player_observations'][current_player]['fireworks'] = {}
+        observation['player_observations'][current_player]['fireworks']['B'] = 0
+        observation['player_observations'][current_player]['fireworks']['G'] = 0
+        observation['player_observations'][current_player]['fireworks']['R'] = 0
+        observation['player_observations'][current_player]['fireworks']['W'] = 0
+        observation['player_observations'][current_player]['fireworks']['Y'] = 0
 
         expected_lt_left = np.zeros(shape=4, dtype=int)
         expected_lt_left[0] = 1
@@ -133,18 +142,24 @@ class ObservationConverterEncodingTest(unittest.TestCase):
 
     def test_differentfireworks(self):
         ''' test different fireworks '''
+        current_player = 1
         observation = {}
-        observation['life_tokens'] = 3
-        observation['information_tokens'] = 8
+        observation['current_player'] = current_player
 
-        observation['fireworks'] = {}
-        observation['fireworks']['B'] = 1
-        observation['fireworks']['G'] = 2
-        observation['fireworks']['R'] = 3
-        observation['fireworks']['W'] = 4
-        observation['fireworks']['Y'] = 5
+        observation['player_observations'] = {}
+        observation['player_observations'][current_player] = {}
 
-        observation['current_player'] = 1
+        observation['player_observations'][current_player]['life_tokens'] = 3
+        observation['player_observations'][current_player]['information_tokens'] = 8
+
+        observation['player_observations'][current_player]['fireworks'] = {}
+        observation['player_observations'][current_player]['fireworks']['B'] = 1
+        observation['player_observations'][current_player]['fireworks']['G'] = 2
+        observation['player_observations'][current_player]['fireworks']['R'] = 3
+        observation['player_observations'][current_player]['fireworks']['W'] = 4
+        observation['player_observations'][current_player]['fireworks']['Y'] = 5
+
+        observation['current_player'] = current_player
 
         expectedfireworkrankblue = np.zeros(shape=6, dtype=int)
         expectedfireworkrankblue[1] = 1
