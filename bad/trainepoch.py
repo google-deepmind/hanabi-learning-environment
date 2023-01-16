@@ -10,6 +10,7 @@ sys.path.append(parentPath)
 from hanabi_learning_environment import pyhanabi, rl_env
 from bad.encoding.observation import Observation
 from bad.actionnetwork import ActionNetwork
+from bad.encoding.observationconverter import ObservationConverter
 
 class TrainEpoch:
     '''train epoch'''
@@ -19,10 +20,12 @@ class TrainEpoch:
             pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
     def train(self) -> None:
         '''train within an environment'''
-        network: ActionNetwork = ActionNetwork()
-        network.build()
-
         hanabi_observation = self.hanabi_environment.reset()
+        observation_converter: ObservationConverter = ObservationConverter()
+
+        observation = observation_converter.convert(hanabi_observation)
+        network: ActionNetwork = ActionNetwork()
+        network.build(observation)
 
         done = False
         while not done:
@@ -31,9 +34,9 @@ class TrainEpoch:
             action = random.choice(legal_actions)
             action_int: int = self.hanabi_environment.game.get_move_uid(action)
 
-            encoded_observation: Observation = Observation(hanabi_observation)
-            network.train_observation(encoded_observation)
-            _, _, done, _ = self.hanabi_environment.step(action_int)
+            network.train_observation(observation)
+            observation_after_step, _, done, _ = self.hanabi_environment.step(action_int)
+            observation = observation_converter.convert(observation_after_step)
 
         print(f'finish: {self.hanabi_environment.state}')
         print(f'score: {self.hanabi_environment.state.score}')
