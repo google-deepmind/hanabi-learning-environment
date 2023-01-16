@@ -18,7 +18,15 @@ class Observation:
 
     def to_array(self) -> list:
         '''one single vecor'''
-        return np.concatenate((self.public_features.firework.red, \
+        return np.concatenate(( \
+            self.public_features.life_tokens_left, \
+            self.public_features.hint_tokens_left, \
+            self.public_features.firework.red, \
             self.public_features.firework.yellow, \
-            self.public_features.firework.green, self.public_features.firework.white, \
-            self.public_features.firework.blue))
+            self.public_features.firework.green, \
+            self.public_features.firework.white, \
+            self.public_features.firework.blue, \
+            # self.public_features.current_player, \
+            self.private_features.hands.own_cards,
+            self.private_features.hands.other_cards
+            ))

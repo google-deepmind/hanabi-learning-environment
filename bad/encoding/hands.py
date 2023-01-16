@@ -1,6 +1,7 @@
 # pylint: disable=missing-module-docstring, wrong-import-position, import-error too-few-public-methods too-many-arguments
 import sys
 import os
+import numpy as np
 
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
@@ -13,14 +14,17 @@ class Hands():
     def __init__(self, observation: dict) -> None:
         current_player:int = observation['current_player']
         print(f'current player id {current_player}')
-
-        self.own_cards = []
+        self.own_cards = np.empty(0, int)
         own_hand = observation['player_observations'][current_player]['observed_hands'][0]
         for card in own_hand:
-            self.own_cards.append(Card(card['color'], card['rank']))
+            own_card = Card(card['color'], card['rank'])
+            self.own_cards = np.append(self.own_cards, own_card.color)
+            self.own_cards = np.append(self.own_cards, own_card.rank)
 
-        self.other_cards = []
+        self.other_cards = np.empty(0, int)
         other_hands = observation['player_observations'][current_player]['observed_hands'][1:4]
         for other_hand in other_hands:
             for card in other_hand:
-                self.other_cards.append(Card(card['color'], card['rank']))
+                other_card = Card(card['color'], card['rank'])
+                self.other_cards = np.append(self.other_cards, other_card.color)
+                self.other_cards = np.append(self.other_cards, other_card.rank)
