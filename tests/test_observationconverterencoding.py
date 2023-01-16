@@ -18,6 +18,8 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         current_player = 1
         observation = {}
         observation['current_player'] = current_player
+        observation['max_action'] = 10
+        observation['last_action'] = 5
 
         observation['player_observations'] = {}
         observation['player_observations'][current_player] = {}
@@ -57,6 +59,9 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         expected_cur_player = np.zeros(shape=2, dtype=int)
         expected_cur_player[1] = 1
 
+        expected_last_action = np.zeros(shape=10, dtype=int)
+        expected_last_action[5] = 1
+
         public_features = PublicFeatures(observation)
 
         self.assertTrue(np.array_equal(public_features.life_tokens_left, \
@@ -77,11 +82,15 @@ class ObservationConverterEncodingTest(unittest.TestCase):
 
         self.assertTrue(np.array_equal(public_features.current_player, expected_cur_player))
 
+        self.assertTrue(np.array_equal(public_features.last_action, expected_last_action))
+
     def test_test_convert_public_features_hasnothing(self):
         ''' convert has nothing '''
         current_player = 0
         observation = {}
         observation['current_player'] = current_player
+        observation['max_action'] = 10
+        observation['last_action'] = 5
 
         observation['player_observations'] = {}
         observation['player_observations'][current_player] = {}
@@ -120,6 +129,9 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         expected_cur_player = np.zeros(shape=2, dtype=int)
         expected_cur_player[0] = 1
 
+        expected_last_action = np.zeros(shape=10, dtype=int)
+        expected_last_action[5] = 1
+
         public_features = PublicFeatures(observation)
 
         self.assertTrue(np.array_equal(public_features.life_tokens_left, \
@@ -139,6 +151,8 @@ class ObservationConverterEncodingTest(unittest.TestCase):
             expectedfireworkrankyellow))
 
         self.assertTrue(np.array_equal(public_features.current_player, expected_cur_player))
+
+        self.assertTrue(np.array_equal(public_features.last_action, expected_last_action))
 
     def test_differentfireworks(self):
         ''' test different fireworks '''

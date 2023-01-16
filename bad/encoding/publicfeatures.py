@@ -20,7 +20,7 @@ class PublicFeatures:
         self.life_tokens_left = self.convert_life_tokens()
         self.hint_tokens_left = self.convert_information_tokens()
         self.current_player = self.convert_current_player()
-
+        self.last_action = self.convert_last_action()
         self.firework = FireworkRank(observation)
 
     def convert_life_tokens(self) -> np.ndarray:
@@ -36,3 +36,10 @@ class PublicFeatures:
     def convert_current_player(self) -> np.ndarray:
         '''converts current player'''
         return tf.keras.utils.to_categorical(self.curr_player, num_classes=2, dtype=int)
+
+    def convert_last_action(self) -> np.ndarray:
+        '''convert last action'''
+        max_action: int = self.observation['max_action']
+        last_action: int = self.observation['last_action']
+
+        return tf.keras.utils.to_categorical(last_action, num_classes=max_action, dtype=int)
