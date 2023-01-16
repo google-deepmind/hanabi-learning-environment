@@ -8,7 +8,6 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from hanabi_learning_environment import pyhanabi, rl_env
-from bad.encoding.observation import Observation
 from bad.actionnetwork import ActionNetwork
 from bad.encoding.observationconverter import ObservationConverter
 
