@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring too-few-public-methods)
 import random
 import numpy as np
 
