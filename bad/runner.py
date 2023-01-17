@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-many-function-args
 import random
 import sys
 import os
@@ -34,6 +34,6 @@ class Runner:
         for episode in range(episodes):
             # observations = self.environment.reset()
             run_episode = RunEpisode(self.network)
-            run_episode.run_episode()
+            run_episode.run()
 
             print(f"begin running episode: {episode}")
