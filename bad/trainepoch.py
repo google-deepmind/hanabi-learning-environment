@@ -16,7 +16,7 @@ class TrainEpoch:
         players:int = 2
         self.hanabi_environment = rl_env.make('Hanabi-Full', players, \
             pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
-    def train(self, batch_size: int) -> None:
+    def train(self, batch_size: int) -> ActionNetwork:
         '''train within an environment'''
         hanabi_observation = self.hanabi_environment.reset()
         # one more move because of no-action move on the beginning
@@ -38,10 +38,12 @@ class TrainEpoch:
                 bad = network.train_observation(observation)
                 next_action = bad.random_action()
                 observation_after_step, _, done, _ = self.hanabi_environment.step(next_action)
-                observation_after_step['last_move'] = next_action
+                observation_after_step['last_action'] = next_action
                 observation_after_step['max_action'] = max_actions
                 # backpropagation
                 observation = observation_converter.convert(observation_after_step)
 
         print(f'finish: {self.hanabi_environment.state}')
         print(f'score: {self.hanabi_environment.state.score}')
+
+        return network
