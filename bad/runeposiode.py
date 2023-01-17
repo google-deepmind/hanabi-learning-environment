@@ -17,6 +17,6 @@ class RunEpisode:
         self.policy = Policy(network)
         self.agents = [BadAgent(self.policy), BadAgent(self.policy)]
 
-    def run() -> None:
+    def run_ep() -> None:
         '''run'''
-        pass
+        print('run episode')

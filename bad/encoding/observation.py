@@ -27,6 +27,7 @@ class Observation:
             self.public_features.firework.white, \
             self.public_features.firework.blue, \
             self.public_features.last_action, \
+            self.public_features.legal_actions.vector, \
             # self.public_features.current_player, \
             self.private_features.hands.own_cards,
             self.private_features.hands.other_cards

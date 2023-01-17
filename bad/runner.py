@@ -34,6 +34,6 @@ class Runner:
         for episode in range(episodes):
             # observations = self.environment.reset()
             run_episode = RunEpisode(self.network)
-            run_episode.run()
+            run_episode.run_ep()
 
             print(f"begin running episode: {episode}")
