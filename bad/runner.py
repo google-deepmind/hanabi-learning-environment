@@ -9,6 +9,8 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
+from bad.runeposiode import RunEpisode
+
 from bad.trainepoch import TrainEpoch
 
 class Runner:
@@ -18,16 +20,20 @@ class Runner:
         tf.random.set_seed(seed)
         np.random.seed(seed)
         random.seed(seed)
+        self.network = None
 
     def train(self, episodes: int, batch_size:int) -> None:
         '''train'''
         for episode in range(episodes):
             print(f"begin training for {episode}")
             train_epoch = TrainEpoch()
-            train_epoch.train(batch_size)
+            self.network = train_epoch.train(batch_size)
 
     def run(self, episodes: int) -> None:
         '''run'''
         for episode in range(episodes):
             # observations = self.environment.reset()
+            run_episode = RunEpisode(self.network)
+            run_episode.run_episode()
+
             print(f"begin running episode: {episode}")

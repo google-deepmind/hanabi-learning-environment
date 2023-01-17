@@ -7,11 +7,13 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from hanabi_learning_environment.rl_env import Agent
+from bad.policy import Policy
 
 class BadAgent(Agent):
     ''' bad agent '''
-    def __init__(self) -> None:
+    def __init__(self, policy: Policy) -> None:
         print('init')
+        self.policy = policy
     def reset(self, config):
         print('reset')
     def act(self, observation):
