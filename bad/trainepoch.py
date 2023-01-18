@@ -27,8 +27,7 @@ class TrainEpoch:
 
         legal_moves_int = np.empty(0, int)
         for legal_move in legal_moves:
-            legal_moves_int = np.append(legal_moves_int, \
-                self.hanabi_environment.game.get_move_uid(legal_move))
+            legal_moves_int = np.append(legal_moves_int, legal_move)
 
         hanabi_observation['legal_actions'] = legal_moves_int
 
@@ -41,7 +40,7 @@ class TrainEpoch:
         max_actions = max_moves + 1 # 0 index based
 
         self.set_extra_observation(hanabi_observation, max_moves, max_actions, \
-             self.hanabi_environment.state.legal_moves())
+             self.hanabi_environment.state.legal_moves_int())
 
         observation_converter: ObservationConverter = ObservationConverter()
         observation = observation_converter.convert(hanabi_observation)
@@ -55,18 +54,14 @@ class TrainEpoch:
             for batch in range(batch_size):
                 # legal_actions = self.hanabi_environment.state.legal_moves()
                 bad = network.train_observation(observation)
-                next_action = bad.random_action()
+                next_action = bad.decode_action(self.hanabi_environment.state.legal_moves_int())
                 next_move = self.hanabi_environment.game.get_move(next_action)
-
-                if not self.hanabi_environment.state.move_is_legal(next_move):
-                    print('illegal move')
 
                 observation_after_step, _, done, _ = self.hanabi_environment.step(next_action)
 
                 self.set_extra_observation(observation_after_step, next_action, max_actions, \
-                    self.hanabi_environment.state.legal_moves())
+                    self.hanabi_environment.state.legal_moves_int())
 
-                # backpropagation
                 observation = observation_converter.convert(observation_after_step)
 
         print(f'finish: {self.hanabi_environment.state}')

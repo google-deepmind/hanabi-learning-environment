@@ -25,7 +25,6 @@ class ActionNetwork():
             tf.keras.layers.Dense(384, activation="relu", name="layer2"),
             tf.keras.layers.Dense(max_action, activation='softmax', name='Output_Layer')
         ])
-        self.print_summary()
 
     def print_summary(self):
         '''print summary'''
@@ -33,9 +32,8 @@ class ActionNetwork():
 
     def train_observation(self, observation: Observation) -> BayesianAction:
         '''input observation, output action'''
-        print(f'traning network with firework blue: {observation.public_features.firework.blue}')
         network_input = observation.to_array()
         reshaped = tf.reshape(network_input, [1, network_input.shape[0]])
 
         result = self.model(reshaped)
-        return BayesianAction(result.numpy())
+        return BayesianAction(result.numpy()[0])

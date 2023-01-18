@@ -19,6 +19,8 @@ import cffi
 import enum
 import sys
 
+import numpy as np
+
 DEFAULT_CDEF_PREFIXES = (None, ".", os.path.dirname(__file__), "/include")
 DEFAULT_LIB_PREFIXES = (None, ".", os.path.dirname(__file__), "/lib")
 PYHANABI_HEADER = "pyhanabi.h"
@@ -594,6 +596,13 @@ class HanabiState(object):
     """Returns false if game is still active, true otherwise."""
     return (lib.StateEndOfGameStatus(self._state) !=
             HanabiEndOfGameType.NOT_FINISHED)
+  # AB change
+  def legal_moves_int(self) -> np.ndarray:
+      result = np.empty(0, int)
+      for legal_move in self.legal_moves():
+          move_id = lib.GetMoveUid(self._game, legal_move.c_move)
+          result = np.append(result, move_id)
+      return result
 
   def legal_moves(self):
     """Returns list of legal moves for currently acting player."""

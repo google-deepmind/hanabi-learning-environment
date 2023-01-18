@@ -8,6 +8,15 @@ class BayesianAction:
     def __init__(self, actions: np.ndarray) -> None:
         self.actions = actions
 
-    def random_action(self) -> int:
+    def decode_action(self, legal_moves:np.ndarray) -> int:
         '''returns a choice'''
-        return random.choice(range(0, self.actions.size))
+        legal_moves_int = legal_moves.tolist()
+        all_actions = self.actions.copy()
+
+        for action in range(0, all_actions.size):
+            exists: bool = legal_moves_int.count(action) > 0
+            if not exists:
+                all_actions[action] = -float('inf')
+
+        result = np.argmax(all_actions, axis=0)
+        return int(result)
