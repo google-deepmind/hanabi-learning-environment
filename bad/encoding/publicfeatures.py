@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, too-few-public-methods too-many-arguments
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error, too-few-public-methods too-many-arguments, disable=too-many-instance-attributes
 import sys
 import os
 import numpy as np
@@ -9,6 +9,7 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from bad.encoding.fireworkrank import FireworkRank
+from bad.encoding.legal_actions import LegalActions
 
 class PublicFeatures:
     '''public features'''
@@ -22,6 +23,7 @@ class PublicFeatures:
         self.current_player = self.convert_current_player()
         self.last_action = self.convert_last_action()
         self.firework = FireworkRank(observation)
+        self.legal_actions = LegalActions(observation)
 
     def convert_life_tokens(self) -> np.ndarray:
         ''' convert life tokens '''

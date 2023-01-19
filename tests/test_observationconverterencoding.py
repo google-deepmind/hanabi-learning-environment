@@ -3,13 +3,13 @@ import unittest
 import sys
 import os
 import numpy as np
-from bad.encoding.fireworkrank import FireworkRank
 
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from bad.encoding.publicfeatures import PublicFeatures
+from bad.encoding.fireworkrank import FireworkRank
 
 class ObservationConverterEncodingTest(unittest.TestCase):
     ''' observation converter '''
@@ -34,6 +34,8 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         observation['player_observations'][current_player]['fireworks']['R'] = 5
         observation['player_observations'][current_player]['fireworks']['W'] = 5
         observation['player_observations'][current_player]['fireworks']['Y'] = 5
+
+        observation['legal_actions'] = np.array([1,2,3])
 
         expected_lt_left = np.zeros(shape=4, dtype=int)
         expected_lt_left[3] = 1
@@ -104,6 +106,8 @@ class ObservationConverterEncodingTest(unittest.TestCase):
         observation['player_observations'][current_player]['fireworks']['R'] = 0
         observation['player_observations'][current_player]['fireworks']['W'] = 0
         observation['player_observations'][current_player]['fireworks']['Y'] = 0
+
+        observation['legal_actions'] = np.empty(0, int)
 
         expected_lt_left = np.zeros(shape=4, dtype=int)
         expected_lt_left[0] = 1
