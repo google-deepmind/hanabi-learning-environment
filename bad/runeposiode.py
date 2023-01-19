@@ -46,3 +46,5 @@ class RunEpisode:
                 result = self.agents[agent_id].act(hanabi_observation)
                 hanabi_observation = result.observation_after_step
                 done = result.done
+                if done:
+                    break

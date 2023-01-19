@@ -13,9 +13,10 @@ def main() -> None:
     '''main'''
     batch_size: int = 1
     episodes_training = 1
-    episodes_running = 1000
+    episodes_running = 1
 
     print(f'welcome to bad agent with tf version: {tf.__version__}')
+
     runner = Runner()
     runner.train(episodes=episodes_training, batch_size=batch_size)
     runner.self_play(episodes_running)

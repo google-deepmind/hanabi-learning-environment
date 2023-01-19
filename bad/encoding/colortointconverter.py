@@ -10,7 +10,7 @@ class ColorToIntConverter:
 
     def __init__(self) -> None:
         '''init'''
-        self.colors = {'None':0, 'R': 1, 'Y': 2, 'G': 3, 'W': 4, 'B': 5}
+        self.colors = {'None': 0, 'R': 1, 'Y': 2, 'G': 3, 'W': 4, 'B': 5}
 
     def convert(self, col: string) -> np.ndarray:
         '''convert'''
