@@ -1,5 +1,5 @@
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error too-few-public-methods too-many-arguments
 import numpy as np
-
 
 class SetExtraObservation:
     '''set extra observation'''

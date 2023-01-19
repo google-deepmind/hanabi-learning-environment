@@ -23,6 +23,7 @@ class RunEpisode:
             pyhanabi.AgentObservationType.CARD_KNOWLEDGE.CARD_KNOWLEDGE)
         self.agents = [BadAgent(self.policy, self.hanabi_environment), \
             BadAgent(self.policy, self.hanabi_environment)]
+        self.seo = SetExtraObservation()
 
     def run(self, episode_number: int) -> None:
         '''run'''
@@ -34,13 +35,11 @@ class RunEpisode:
         max_moves: int = self.hanabi_environment.game.max_moves() + 1
         max_actions = max_moves + 1 # 0 index based
 
-        seo = SetExtraObservation()
-
         done = False
         while not done:
             for agent_id in range(len(self.agents)):
 
-                seo.set_extra_observation(hanabi_observation, max_moves, max_actions, \
+                self.seo.set_extra_observation(hanabi_observation, max_moves, max_actions, \
                     self.hanabi_environment.state.legal_moves_int())
 
                 result = self.agents[agent_id].act(hanabi_observation)

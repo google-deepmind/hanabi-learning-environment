@@ -2,8 +2,6 @@
 import sys
 import os
 
-import numpy as np
-
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
@@ -18,7 +16,7 @@ class TrainEpoch:
     def __init__(self) -> None:
         players:int = 2
         self.hanabi_environment = rl_env.make('Hanabi-Full', players, \
-            pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)    
+            pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
 
     def train(self, batch_size: int) -> ActionNetwork:
         '''train within an environment'''
@@ -29,7 +27,6 @@ class TrainEpoch:
         max_actions = max_moves + 1 # 0 index based
 
         seo = SetExtraObservation()
-        
         seo.set_extra_observation(hanabi_observation, max_moves, max_actions, \
              self.hanabi_environment.state.legal_moves_int())
 

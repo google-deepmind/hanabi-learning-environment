@@ -21,5 +21,6 @@ def main() -> None:
     runner.train(episodes=episodes_training, batch_size=batch_size)
     runner.self_play(episodes_running)
 
+    print("finish with everything")
 if __name__ == "__main__":
     main()
