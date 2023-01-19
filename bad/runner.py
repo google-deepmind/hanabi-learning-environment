@@ -10,8 +10,8 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from bad.runeposiode import RunEpisode
-
 from bad.trainepoch import TrainEpoch
+from bad.print_selfplay import PrintSelfPlay
 
 class Runner:
     '''runner'''
@@ -36,6 +36,7 @@ class Runner:
         for episode in range(episodes):
             # observations = self.environment.reset()
             run_episode = RunEpisode(self.network)
-            run_episode.run()
+            run_episode.run(episode)
 
-            print(f"begin running episode: {episode}")
+            print_selfplay = PrintSelfPlay()
+            print_selfplay.print(run_episode.hanabi_environment)

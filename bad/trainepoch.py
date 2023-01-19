@@ -11,25 +11,14 @@ sys.path.append(parentPath)
 from hanabi_learning_environment import pyhanabi, rl_env
 from bad.actionnetwork import ActionNetwork
 from bad.encoding.observationconverter import ObservationConverter
+from bad.set_extra_observation import SetExtraObservation
 
 class TrainEpoch:
     '''train epoch'''
     def __init__(self) -> None:
         players:int = 2
         self.hanabi_environment = rl_env.make('Hanabi-Full', players, \
-            pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
-
-    def set_extra_observation(self, hanabi_observation:dict, last_action: int, max_action:int, \
-         legal_moves: list) -> None:
-        '''set extra observation'''
-        hanabi_observation['last_action'] = last_action
-        hanabi_observation['max_action'] = max_action
-
-        legal_moves_int = np.empty(0, int)
-        for legal_move in legal_moves:
-            legal_moves_int = np.append(legal_moves_int, legal_move)
-
-        hanabi_observation['legal_actions'] = legal_moves_int
+            pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)    
 
     def train(self, batch_size: int) -> ActionNetwork:
         '''train within an environment'''
@@ -39,7 +28,9 @@ class TrainEpoch:
         max_moves: int = self.hanabi_environment.game.max_moves() + 1
         max_actions = max_moves + 1 # 0 index based
 
-        self.set_extra_observation(hanabi_observation, max_moves, max_actions, \
+        seo = SetExtraObservation()
+        
+        seo.set_extra_observation(hanabi_observation, max_moves, max_actions, \
              self.hanabi_environment.state.legal_moves_int())
 
         observation_converter: ObservationConverter = ObservationConverter()
@@ -59,7 +50,7 @@ class TrainEpoch:
 
                 observation_after_step, _, done, _ = self.hanabi_environment.step(next_action)
 
-                self.set_extra_observation(observation_after_step, next_action, max_actions, \
+                seo.set_extra_observation(observation_after_step, next_action, max_actions, \
                     self.hanabi_environment.state.legal_moves_int())
 
                 observation = observation_converter.convert(observation_after_step)

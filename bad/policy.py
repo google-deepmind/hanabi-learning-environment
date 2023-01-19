@@ -7,9 +7,15 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from bad.actionnetwork import ActionNetwork
+from bad import bad_agent
+from bad.encoding.observation import Observation
+from bad.bayesianaction import BayesianAction
 
 class Policy:
     '''policy'''
     def __init__(self, network: ActionNetwork) -> None:
         '''init'''
-        pass
+        self.network = network
+    def get_action(self, observation: Observation) -> BayesianAction:
+        '''get action'''
+        return self.network.get_action(observation)

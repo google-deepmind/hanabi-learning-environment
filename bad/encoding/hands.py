@@ -16,7 +16,11 @@ class Hands():
         self.own_cards = np.empty(0, int)
         own_hand = observation['player_observations'][current_player]['observed_hands'][0]
         for card in own_hand:
-            own_card = Card(card['color'], card['rank'])
+            if int(card['rank']) == -1:
+                own_card = Card('None', 0)
+            else:
+                own_card = Card(card['color'], card['rank'])
+
             self.own_cards = np.append(self.own_cards, own_card.color)
             self.own_cards = np.append(self.own_cards, own_card.rank)
 

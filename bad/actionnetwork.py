@@ -30,10 +30,13 @@ class ActionNetwork():
         '''print summary'''
         self.model.summary()
 
-    def train_observation(self, observation: Observation) -> BayesianAction:
-        '''input observation, output action'''
+    def get_action(self, observation: Observation) -> BayesianAction:
+        '''get action'''
         network_input = observation.to_array()
         reshaped = tf.reshape(network_input, [1, network_input.shape[0]])
 
         result = self.model(reshaped)
         return BayesianAction(result.numpy()[0])
+    def train_observation(self, observation: Observation) -> BayesianAction:
+        '''input observation, output action'''
+        return self.get_action(observation)
