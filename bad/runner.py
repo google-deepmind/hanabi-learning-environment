@@ -24,13 +24,15 @@ class Runner:
 
     def train(self, episodes: int, batch_size:int) -> None:
         '''train'''
+        print('train')
         for episode in range(episodes):
             print(f"begin training for {episode}")
             train_epoch = TrainEpoch()
             self.network = train_epoch.train(batch_size)
 
-    def run(self, episodes: int) -> None:
-        '''run'''
+    def self_play(self, episodes: int) -> None:
+        '''self play'''
+        print('self play')
         for episode in range(episodes):
             # observations = self.environment.reset()
             run_episode = RunEpisode(self.network)
