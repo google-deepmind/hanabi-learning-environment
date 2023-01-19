@@ -15,3 +15,5 @@ class BadAgent(Agent):
         self.policy = policy
     def act(self, observation):
         print('act')
+    def reset(self, config):
+        print('reset')

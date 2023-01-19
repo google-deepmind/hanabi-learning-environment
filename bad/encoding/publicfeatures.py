@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, too-few-public-methods too-many-arguments
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error, too-few-public-methods too-many-arguments, disable=too-many-instance-attributes
 import sys
 import os
 import numpy as np
