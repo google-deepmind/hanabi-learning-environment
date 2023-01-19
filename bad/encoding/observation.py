@@ -18,7 +18,7 @@ class Observation:
 
     def to_array(self) -> list:
         '''one single vecor'''
-        return np.concatenate(( \
+        result = np.concatenate(( \
             self.public_features.life_tokens_left, \
             self.public_features.hint_tokens_left, \
             self.public_features.firework.red, \
@@ -32,3 +32,4 @@ class Observation:
             self.private_features.hands.own_cards,
             self.private_features.hands.other_cards
             ))
+        return result

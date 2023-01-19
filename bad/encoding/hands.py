@@ -24,6 +24,8 @@ class Hands():
             self.own_cards = np.append(self.own_cards, own_card.color)
             self.own_cards = np.append(self.own_cards, own_card.rank)
 
+        self.own_cards = self.adjust_card_length(self.own_cards)
+
         self.other_cards = np.empty(0, int)
         other_hands = observation['player_observations'][current_player]['observed_hands'][1:4]
         for other_hand in other_hands:
@@ -31,3 +33,12 @@ class Hands():
                 other_card = Card(card['color'], card['rank'])
                 self.other_cards = np.append(self.other_cards, other_card.color)
                 self.other_cards = np.append(self.other_cards, other_card.rank)
+
+        self.other_cards = self.adjust_card_length(self.other_cards)
+
+    def adjust_card_length(self, cards: np.array) -> np.array:
+        '''adjust card length'''
+        fill_with_zeros: int = 60 - len(cards)
+        if fill_with_zeros > 0:
+            cards = np.append(cards, np.zeros((fill_with_zeros, ), dtype=int))
+        return cards
