@@ -22,8 +22,8 @@ class BadAgent(Agent):
         '''act'''
         bad = self.policy.get_action(self.observation_converter.convert(observation))
         next_action = bad.decode_action(self.hanabi_environment.state.legal_moves_int())
-        observation_after_step, _, done, _ = self.hanabi_environment.step(next_action)
-        return BadAgentActingResult(observation_after_step, done)
+        observation_after_step, reward, done, _ = self.hanabi_environment.step(next_action)
+        return BadAgentActingResult(observation_after_step, done, int(reward))
 
     def reset(self, config):
         print('reset')

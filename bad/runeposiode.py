@@ -11,6 +11,7 @@ from bad.bad_agent import BadAgent
 from bad.actionnetwork import ActionNetwork
 from bad.policy import Policy
 from bad.set_extra_observation import SetExtraObservation
+from bad.run_episode_result import RunEpisodeResult
 
 class RunEpisode:
     '''runs an episode'''
@@ -24,7 +25,7 @@ class RunEpisode:
             BadAgent(self.policy, self.hanabi_environment)]
         self.seo = SetExtraObservation()
 
-    def run(self, episode_number: int) -> None:
+    def run(self, episode_number: int) -> RunEpisodeResult:
         '''run'''
         print(f"run episode {episode_number}")
 
@@ -34,6 +35,7 @@ class RunEpisode:
         max_moves: int = self.hanabi_environment.game.max_moves() + 1
         max_actions = max_moves + 1 # 0 index based
 
+        episode_reward = 0
         done = False
         while not done:
             for agent_id in range(len(self.agents)):
@@ -44,5 +46,8 @@ class RunEpisode:
                 result = self.agents[agent_id].act(hanabi_observation)
                 hanabi_observation = result.observation_after_step
                 done = result.done
+                episode_reward += result.reward
                 if done:
                     break
+
+        return RunEpisodeResult(episode_number, episode_reward, self.hanabi_environment)
