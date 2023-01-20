@@ -1,6 +1,9 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-few-public-methods unused-variable, no-method-argument, unnecessary-pass, consider-using-enumerate
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-few-public-methods unused-variable, no-method-argument, unnecessary-pass, consider-using-enumerate, too-many-function-args
 import sys
 import os
+import time
+
+import numpy as np
 
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
@@ -37,17 +40,21 @@ class RunEpisode:
 
         episode_reward = 0
         done = False
+        agent_step_times = np.empty(0, float)
         while not done:
             for agent_id in range(len(self.agents)):
 
                 self.seo.set_extra_observation(hanabi_observation, max_moves, max_actions, \
                     self.hanabi_environment.state.legal_moves_int())
-
+                start_time = time.time()
                 result = self.agents[agent_id].act(hanabi_observation)
+                end_time = time.time()
+                agent_step_times.append(end_time - start_time)
                 hanabi_observation = result.observation_after_step
                 done = result.done
                 episode_reward += result.reward
                 if done:
                     break
 
-        return RunEpisodeResult(episode_number, episode_reward, self.hanabi_environment)
+        return RunEpisodeResult(episode_number, episode_reward, self.hanabi_environment, \
+            agent_step_times)

@@ -19,5 +19,10 @@ class PrintEpisodeSelfPlay:
         '''print'''
         print(f"episode {self.run_episode_result.number} result:")
         print(f"episode reward: {self.run_episode_result.reward}")
-        print(f'finish: {self.run_episode_result.hanabi_environment.state}')
-        print(f'score: {self.run_episode_result.hanabi_environment.state.score}')
+        print(f"finish: {self.run_episode_result.hanabi_environment.state}")
+        print(f"score: {self.run_episode_result.hanabi_environment.state.score}")
+        print(f"life tokens: {self.run_episode_result.hanabi_environment.state.life_tokens}")
+        total_steps = len(self.run_episode_result.agent_step_times)
+        total_time = self.run_episode_result.agent_step_times.sum()
+        print(f"Average training steps per second: {total_steps / total_time}")
+        
