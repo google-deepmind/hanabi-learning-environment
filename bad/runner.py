@@ -43,7 +43,7 @@ class Runner:
             run_episode = RunEpisode(self.network)
             episode_result = run_episode.run(episode)
 
-            if (episode_result.reward > max_reward):
+            if episode_result.reward > max_reward:
                 max_reward = episode_result.reward
             total_reward += episode_result.reward
 

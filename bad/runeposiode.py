@@ -49,5 +49,5 @@ class RunEpisode:
                 episode_reward += result.reward
                 if done:
                     break
-    
+
         return RunEpisodeResult(episode_number, episode_reward, self.hanabi_environment)

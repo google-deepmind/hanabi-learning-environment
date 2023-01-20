@@ -52,7 +52,4 @@ class TrainEpoch:
 
                 observation = observation_converter.convert(observation_after_step)
 
-        print(f'finish: {self.hanabi_environment.state}')
-        print(f'score: {self.hanabi_environment.state.score}')
-
         return network
