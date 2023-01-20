@@ -9,7 +9,7 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.runeposiode import RunEpisode
+from bad.run_eposiode import RunEpisode
 from bad.trainepoch import TrainEpoch
 from bad.print_episode_selfplay import PrintEpisodeSelfPlay
 from bad.print_total_selfplay import PrintTotalSelfPlay

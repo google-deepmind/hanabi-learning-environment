@@ -8,7 +8,7 @@ sys.path.append(parentPath)
 
 from bad.actionnetwork import ActionNetwork
 from bad.encoding.observation import Observation
-from bad.bayesianaction import BayesianAction
+from bad.bayesian_action import BayesianAction
 
 class Policy:
     '''policy'''

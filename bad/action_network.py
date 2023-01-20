@@ -8,7 +8,7 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from bad.encoding.observation import Observation
-from bad.bayesianaction import BayesianAction
+from bad.bayesian_action import BayesianAction
 
 class ActionNetwork():
     ''' action network '''
