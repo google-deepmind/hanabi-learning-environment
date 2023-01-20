@@ -8,7 +8,7 @@ sys.path.append(parentPath)
 
 from hanabi_learning_environment import pyhanabi, rl_env
 from bad.bad_agent import BadAgent
-from bad.actionnetwork import ActionNetwork
+from bad.action_network import ActionNetwork
 from bad.policy import Policy
 from bad.set_extra_observation import SetExtraObservation
 from bad.run_episode_result import RunEpisodeResult
