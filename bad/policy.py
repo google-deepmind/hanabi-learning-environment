@@ -6,7 +6,7 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.actionnetwork import ActionNetwork
+from bad.action_network import ActionNetwork
 from bad.encoding.observation import Observation
 from bad.bayesian_action import BayesianAction
 
