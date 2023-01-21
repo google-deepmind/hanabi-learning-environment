@@ -2,6 +2,8 @@
 import sys
 import os
 
+import numpy as np
+
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
@@ -10,7 +12,9 @@ from hanabi_learning_environment.rl_env import HanabiEnv
 
 class RunEpisodeResult:
     '''run episode result'''
-    def __init__(self,number:int, reward:int, hanabi_environment: HanabiEnv) -> None:
+    def __init__(self,number:int, reward:int, hanabi_environment: HanabiEnv, \
+        agent_step_times: np.ndarray) -> None:
         self.number = number
         self.reward  = reward
         self.hanabi_environment = hanabi_environment
+        self.agent_step_times = agent_step_times

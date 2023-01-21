@@ -9,8 +9,8 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.runeposiode import RunEpisode
-from bad.trainepoch import TrainEpoch
+from bad.run_eposiode import RunEpisode
+from bad.train_epoch import TrainEpoch
 from bad.print_episode_selfplay import PrintEpisodeSelfPlay
 from bad.print_total_selfplay import PrintTotalSelfPlay
 
@@ -37,9 +37,10 @@ class Runner:
 
         total_reward = 0
         max_reward = 0
+        perfect_games = 0
 
         for episode in range(episodes):
-            # observations = self.environment.reset()
+
             run_episode = RunEpisode(self.network)
             episode_result = run_episode.run(episode)
 
@@ -47,9 +48,12 @@ class Runner:
                 max_reward = episode_result.reward
             total_reward += episode_result.reward
 
+            if episode_result.reward == 25:
+                perfect_games = perfect_games+1
+
             print_selfplay = PrintEpisodeSelfPlay(episode_result)
             print_selfplay.print()
 
         print('')
-        print_total_selfplay = PrintTotalSelfPlay(episodes, total_reward, max_reward)
+        print_total_selfplay = PrintTotalSelfPlay(episodes, total_reward, max_reward, perfect_games)
         print_total_selfplay.print()
