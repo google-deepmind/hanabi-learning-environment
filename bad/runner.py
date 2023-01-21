@@ -37,15 +37,19 @@ class Runner:
 
         total_reward = 0
         max_reward = 0
+        perfect_games = 0
 
         for episode in range(episodes):
-            # observations = self.environment.reset()
+
             run_episode = RunEpisode(self.network)
             episode_result = run_episode.run(episode)
 
             if episode_result.reward > max_reward:
                 max_reward = episode_result.reward
             total_reward += episode_result.reward
+
+            if episode_result.reward == 25:
+                perfect_games = perfect_games+1
 
             print_selfplay = PrintEpisodeSelfPlay(episode_result)
             print_selfplay.print()
