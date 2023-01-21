@@ -25,4 +25,3 @@ class PrintEpisodeSelfPlay:
         total_steps = len(self.run_episode_result.agent_step_times)
         total_time = self.run_episode_result.agent_step_times.sum()
         print(f"Average training steps per second: {total_steps / total_time}")
-        

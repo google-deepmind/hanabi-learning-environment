@@ -55,5 +55,5 @@ class Runner:
             print_selfplay.print()
 
         print('')
-        print_total_selfplay = PrintTotalSelfPlay(episodes, total_reward, max_reward)
+        print_total_selfplay = PrintTotalSelfPlay(episodes, total_reward, max_reward, perfect_games)
         print_total_selfplay.print()
