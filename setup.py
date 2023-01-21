@@ -18,7 +18,7 @@ setup(
     ],
     entry_points={
     'console_scripts': [
-        'ws2223-group7-hanabi-learning-environment-bad = bad.main:main',
+        'ws2223-group7-hanabi-learning-environment-bad = main.main:main',
     ],
     }
 )
