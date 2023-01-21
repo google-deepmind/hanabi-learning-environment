@@ -49,7 +49,7 @@ class RunEpisode:
                 start_time = time.time()
                 result = self.agents[agent_id].act(hanabi_observation)
                 end_time = time.time()
-                agent_step_times.append(end_time - start_time)
+                agent_step_times = np.append(agent_step_times, end_time - start_time)
                 hanabi_observation = result.observation_after_step
                 done = result.done
                 episode_reward += result.reward

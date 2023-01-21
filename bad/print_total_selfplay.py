@@ -11,7 +11,7 @@ class PrintTotalSelfPlay:
 
     def print(self) -> None:
         '''print'''
-        print(f"Total Reward {self.total_reward}")
+        print(f"Total Reward: {self.total_reward}")
         print(f"Max  Reward: {self.max_reward}")
         print(f"Avg. Reward: {format(self.total_reward/(self.episodes+1),'.3f')}")
         print(f"Perfecet Games: {format(self.perfect_games)}")
