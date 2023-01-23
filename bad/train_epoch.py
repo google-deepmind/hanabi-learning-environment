@@ -26,7 +26,7 @@ class TrainEpoch:
 
         for batch in range(batch_size):
 
-            self.hanabi_environment.state = copied_state
+            self.hanabi_environment.state = copied_state.copy()
             # one more move because of no-action move on the beginning
             #fake an action that does not exists
             max_moves: int = self.hanabi_environment.game.max_moves() + 1
