@@ -20,26 +20,31 @@ class TrainEpoch:
 
     def train(self, batch_size: int) -> ActionNetwork:
         '''train within an environment'''
+
         hanabi_observation = self.hanabi_environment.reset()
-        # one more move because of no-action move on the beginning
-        #fake an action that does not exists
-        max_moves: int = self.hanabi_environment.game.max_moves() + 1
-        max_actions = max_moves + 1 # 0 index based
+        copied_state = self.hanabi_environment.state.copy()
 
-        seo = SetExtraObservation()
-        seo.set_extra_observation(hanabi_observation, max_moves, max_actions, \
-             self.hanabi_environment.state.legal_moves_int())
+        for batch in range(batch_size):
 
-        observation_converter: ObservationConverter = ObservationConverter()
-        observation = observation_converter.convert(hanabi_observation)
+            self.hanabi_environment.state = copied_state.copy()
+            # one more move because of no-action move on the beginning
+            #fake an action that does not exists
+            max_moves: int = self.hanabi_environment.game.max_moves() + 1
+            max_actions = max_moves + 1 # 0 index based
 
-        network: ActionNetwork = ActionNetwork()
-        network.build(observation, max_actions)
+            seo = SetExtraObservation()
+            seo.set_extra_observation(hanabi_observation, max_moves, max_actions, \
+                self.hanabi_environment.state.legal_moves_int())
 
-        done = False
-        while not done:
+            observation_converter: ObservationConverter = ObservationConverter()
+            observation = observation_converter.convert(hanabi_observation)
 
-            for batch in range(batch_size):
+            network: ActionNetwork = ActionNetwork()
+            network.build(observation, max_actions)
+
+            done = False
+            while not done:
+
                 # legal_actions = self.hanabi_environment.state.legal_moves()
                 bad = network.train_observation(observation)
                 next_action = bad.decode_action(self.hanabi_environment.state.legal_moves_int())

@@ -11,7 +11,7 @@ from bad.runner import Runner
 
 def main() -> None:
     '''main'''
-    batch_size: int = 1
+    batch_size: int = 10
     episodes_training = 1
     episodes_running = 100
 

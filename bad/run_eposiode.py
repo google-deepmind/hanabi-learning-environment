@@ -47,7 +47,8 @@ class RunEpisode:
                 self.seo.set_extra_observation(hanabi_observation, max_moves, max_actions, \
                     self.hanabi_environment.state.legal_moves_int())
                 start_time = time.time()
-                result = self.agents[agent_id].act(hanabi_observation)
+                current_agent = self.agents[agent_id]
+                result = current_agent.act(hanabi_observation)
                 end_time = time.time()
                 agent_step_times = np.append(agent_step_times, end_time - start_time)
                 hanabi_observation = result.observation_after_step
