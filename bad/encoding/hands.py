@@ -38,6 +38,8 @@ class Hands():
 
     def adjust_card_length(self, cards: np.array) -> np.array:
         '''adjust card length'''
+        # in case the agent can not provide all the cards anymore
+        # does not seem to be mentioned in the paper
         fill_with_zeros: int = 60 - len(cards)
         if fill_with_zeros > 0:
             cards = np.append(cards, np.zeros((fill_with_zeros, ), dtype=int))
