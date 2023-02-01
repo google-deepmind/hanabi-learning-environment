@@ -582,6 +582,25 @@ def make(environment_name: string, num_players: int, agentObservationType: pyhan
             "observation_type":
                 agentObservationType.value
         })
+
+  elif environment_name == "Hanabi-Group-7":
+    return HanabiEnv(
+        config={
+            "colors":
+                2,
+            "ranks":
+                2,
+            "players":
+                num_players,
+            "hand_size":
+                2,
+            "max_information_tokens":
+                1,
+            "max_life_tokens":
+                2,
+            "observation_type":
+                agentObservationType.value
+        })  
   else:
     raise ValueError("Unknown environment {}".format(environment_name))
 

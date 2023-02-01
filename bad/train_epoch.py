@@ -15,7 +15,7 @@ class TrainEpoch:
     '''train epoch'''
     def __init__(self) -> None:
         players:int = 2
-        self.hanabi_environment = rl_env.make('Hanabi-Full', players, \
+        self.hanabi_environment = rl_env.make('Hanabi-Group-7', players, \
             pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
 
     def train(self, batch_size: int) -> ActionNetwork:
