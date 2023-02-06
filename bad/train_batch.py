@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-many-function-args, ungrouped-imports
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-many-function-args, ungrouped-imports, too-few-public-methods
 
 import sys
 import os
@@ -45,9 +45,9 @@ class TrainBatch:
             observation_converter: ObservationConverter = ObservationConverter()
             network.build(observation_converter.convert(hanabi_observation), max_actions)
 
-            collect_episode_data = CollectEpisodeData(hanabi_observation, hanabi_environment, network)
+            ce_data = CollectEpisodeData(hanabi_observation, hanabi_environment, network)
             episode_data_result: CollectEpisodeDataResult = \
-                 collect_episode_data.collect()
+                 ce_data.collect()
 
             collect_episodes_result.add(episode_data_result)
 

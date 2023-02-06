@@ -9,7 +9,6 @@ sys.path.append(parentPath)
 
 from bad.encoding.observation import Observation
 from bad.bayesian_action import BayesianAction
-from bad.encoding.observationconverter import ObservationConverter
 
 class ActionNetwork():
     ''' action network '''
@@ -39,4 +38,3 @@ class ActionNetwork():
 
         result = self.model(reshaped)
         return BayesianAction(result.numpy()[0])
-
