@@ -15,14 +15,15 @@ from bad.collect_episode_data_result import CollectEpisodeDataResult
 
 class CollectEpisodeData:
     '''train episode'''
-    def __init__(self) -> None:
-        pass
+    def __init__(self, hanabi_observation:dict, hanabi_environment: rl_env.HanabiEnv) -> None:
+        self.hanabi_observation = hanabi_observation
+        self.hanabi_environment = hanabi_environment
 
-    def collect(self, hanabi_observation:dict, hanbi_environment: rl_env.HanabiEnv) \
+    def collect(self) \
          -> CollectEpisodeDataResult:
         '''train within an environment'''
 
-        copied_state = hanbi_environment.state.copy()
+        copied_state = self.hanabi_environment.state.copy()
 
         buffer = Buffer()
 
@@ -33,11 +34,11 @@ class CollectEpisodeData:
         max_actions = max_moves + 1 # 0 index based
 
         seo = SetExtraObservation()
-        seo.set_extra_observation(hanabi_observation, max_moves, max_actions, \
+        seo.set_extra_observation(self.hanabi_observation, max_moves, max_actions, \
             self.hanabi_environment.state.legal_moves_int())
 
         observation_converter: ObservationConverter = ObservationConverter()
-        observation = observation_converter.convert(hanabi_observation)
+        observation = observation_converter.convert(self.hanabi_observation)
 
         network: ActionNetwork = ActionNetwork()
         network.build(observation, max_actions)
@@ -52,12 +53,12 @@ class CollectEpisodeData:
 
             observation_after_step, reward, done, _ = self.hanabi_environment.step(next_action)
 
-            buffer.add(hanabi_observation, next_action, reward)
+            buffer.add(self.hanabi_observation, next_action, reward)
 
             seo.set_extra_observation(observation_after_step, next_action, max_actions, \
                 self.hanabi_environment.state.legal_moves_int())
 
             observation = observation_converter.convert(observation_after_step)
-            hanabi_observation = observation_after_step
+            self.hanabi_observation = observation_after_step
 
         return CollectEpisodeDataResult(network, buffer)

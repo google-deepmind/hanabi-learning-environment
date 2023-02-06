@@ -19,7 +19,7 @@ class TrainBatch:
     def __init__(self) -> None:
         pass
 
-    def run(self, batch_size: int) -> None:
+    def run(self, batch_size: int) -> CollectEpisodesDataResults:
         '''init'''
         print('train')
 
@@ -34,8 +34,10 @@ class TrainBatch:
             pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
             hanabi_observation = hanabi_environment.reset()
 
-            collect_episode_data = CollectEpisodeData()
+            collect_episode_data = CollectEpisodeData(hanabi_observation, hanabi_environment)
             episode_data_result: CollectEpisodeDataResult = \
-                 collect_episode_data.collect(hanabi_observation, hanabi_environment)
+                 collect_episode_data.collect()
 
             collect_episodes_result.add(episode_data_result)
+
+        return collect_episodes_result

@@ -14,14 +14,14 @@ from bad.train_batch import TrainBatch
 
 def main() -> None:
     '''main'''
-    batch_size: int = 10
+    batch_size: int = 500
     episodes_running = 100
 
     print(f'welcome to bad agent with tf version: {tf.__version__}')
     print(f'running {episodes_running} episodes')
 
     train_batch = TrainBatch()
-    train_batch.run(batch_size=batch_size)
+    training_result = train_batch.run(batch_size=batch_size)
 
     runner = Runner()
     runner.self_play(episodes_running)
