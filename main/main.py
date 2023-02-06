@@ -1,26 +1,30 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-name-in-module
+
 import os
 import sys
 import tensorflow as tf
+
 
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.runner import Runner
+from bad.selfplay import SelfPlay
+from bad.train_batch import TrainBatch
 
 def main() -> None:
     '''main'''
-    batch_size: int = 10
-    episodes_training = 1
+    batch_size: int = 50
     episodes_running = 100
 
     print(f'welcome to bad agent with tf version: {tf.__version__}')
     print(f'running {episodes_running} episodes')
 
-    runner = Runner()
-    runner.train(episodes=episodes_training, batch_size=batch_size)
-    runner.self_play(episodes_running)
+    train_batch = TrainBatch()
+    training_result = train_batch.run(batch_size=batch_size)
+
+    self_play = SelfPlay(training_result.network)
+    self_play.run(episodes_running)
 
     print("finish with everything")
 if __name__ == "__main__":

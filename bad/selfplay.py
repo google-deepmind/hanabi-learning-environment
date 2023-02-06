@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-many-function-args
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-many-function-args, ungrouped-imports, too-few-public-methods
 import random
 import sys
 import os
@@ -10,28 +10,20 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from bad.run_eposiode import RunEpisode
-from bad.train_epoch import TrainEpoch
 from bad.print_episode_selfplay import PrintEpisodeSelfPlay
 from bad.print_total_selfplay import PrintTotalSelfPlay
+from bad.action_network import ActionNetwork
 
-class Runner:
-    '''runner'''
-    def __init__(self) -> None:
+class SelfPlay:
+    '''self play'''
+    def __init__(self, network: ActionNetwork) -> None:
         seed = 42
         tf.random.set_seed(seed)
         np.random.seed(seed)
         random.seed(seed)
-        self.network = None
+        self.network = network
 
-    def train(self, episodes: int, batch_size:int) -> None:
-        '''train'''
-        print('train')
-        for episode in range(episodes):
-            print(f"begin training for {episode}")
-            train_epoch = TrainEpoch()
-            self.network = train_epoch.train(batch_size)
-
-    def self_play(self, episodes: int) -> None:
+    def run(self, episodes: int) -> None:
         '''self play'''
         print('self play')
 

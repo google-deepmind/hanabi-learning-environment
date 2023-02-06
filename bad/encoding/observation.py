@@ -23,9 +23,9 @@ class Observation:
             self.public_features.hint_tokens_left, \
             self.public_features.firework.red, \
             self.public_features.firework.yellow, \
-            # self.public_features.firework.green, \
-            # self.public_features.firework.white, \
-            # self.public_features.firework.blue, \
+            self.public_features.firework.green, \
+            self.public_features.firework.white, \
+            self.public_features.firework.blue, \
             self.public_features.last_action, \
             self.public_features.legal_actions.vector, \
             self.public_features.current_player, \

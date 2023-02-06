@@ -18,13 +18,14 @@ class ActionNetwork():
 
     def build(self, observation: Observation, max_action: int) -> None:
         '''build'''
-        shape = observation.to_array().shape
-        self.model = tf.keras.Sequential([
-            tf.keras.Input(shape=shape, name="input"),
-            tf.keras.layers.Dense(384, activation="relu", name="layer1"),
-            tf.keras.layers.Dense(384, activation="relu", name="layer2"),
-            tf.keras.layers.Dense(max_action, activation='softmax', name='Output_Layer')
-        ])
+        if self.model is None:
+            shape = observation.to_array().shape
+            self.model = tf.keras.Sequential([
+                tf.keras.Input(shape=shape, name="input"),
+                tf.keras.layers.Dense(384, activation="relu", name="layer1"),
+                tf.keras.layers.Dense(384, activation="relu", name="layer2"),
+                tf.keras.layers.Dense(max_action, activation='softmax', name='Output_Layer')
+            ])
 
     def print_summary(self):
         '''print summary'''
@@ -37,6 +38,3 @@ class ActionNetwork():
 
         result = self.model(reshaped)
         return BayesianAction(result.numpy()[0])
-    def train_observation(self, observation: Observation) -> BayesianAction:
-        '''input observation, output action'''
-        return self.get_action(observation)
