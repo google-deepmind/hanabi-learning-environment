@@ -9,7 +9,7 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.runner import Runner
+from bad.selfplay import Runner
 from bad.train_batch import TrainBatch
 
 def main() -> None:
