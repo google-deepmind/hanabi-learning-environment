@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-name-in-module
+# pylint: disable=missing-module-docstring, wrong-import-position, no-name-in-module
 
 import os
 import sys
@@ -9,7 +9,7 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.selfplay import SelfPlay
+from bad.self_play import SelfPlay
 from bad.train_batch import TrainBatch
 
 def main() -> None:

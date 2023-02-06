@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-few-public-methods unused-variable, no-method-argument, unnecessary-pass, consider-using-enumerate
+# pylint: disable=missing-module-docstring, wrong-import-position, too-few-public-methods, consider-using-enumerate
 
 class PrintTotalSelfPlay:
     '''print total selfplay'''
