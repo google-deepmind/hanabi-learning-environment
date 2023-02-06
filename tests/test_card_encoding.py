@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, too-many-locals
+# pylint: disable=missing-module-docstring, wrong-import-position, too-many-locals, too-many-statements
 import unittest
 import sys
 import os
