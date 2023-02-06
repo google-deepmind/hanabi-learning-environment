@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-many-function-args, ungrouped-imports, too-few-public-methods
+# pylint: disable=missing-module-docstring, wrong-import-position, ungrouped-imports, too-few-public-methods
 
 import sys
 import os
@@ -34,7 +34,7 @@ class TrainBatch:
 
             constants = Constants()
             hanabi_environment = rl_env.make(constants.environment_name, players, \
-            pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
+            pyhanabi.AgentObservationType.SEER)
             hanabi_observation = hanabi_environment.reset()
             max_moves: int = hanabi_environment.game.max_moves() + 1
             max_actions = max_moves + 1 # 0 index based

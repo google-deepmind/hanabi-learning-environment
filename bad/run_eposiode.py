@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-few-public-methods unused-variable, no-method-argument, unnecessary-pass, consider-using-enumerate, too-many-function-args
+# pylint: disable=missing-module-docstring, wrong-import-position, too-few-public-methods, no-method-argument, unnecessary-pass, consider-using-enumerate, too-many-function-args
 import sys
 import os
 import time
@@ -25,7 +25,7 @@ class RunEpisode:
         players:int = 2
         constants = Constants()
         self.hanabi_environment = rl_env.make(constants.environment_name, players, \
-            pyhanabi.AgentObservationType.CARD_KNOWLEDGE.CARD_KNOWLEDGE)
+            pyhanabi.AgentObservationType.CARD_KNOWLEDGE)
         self.agents = [BadAgent(self.policy, self.hanabi_environment), \
             BadAgent(self.policy, self.hanabi_environment)]
         self.seo = SetExtraObservation()

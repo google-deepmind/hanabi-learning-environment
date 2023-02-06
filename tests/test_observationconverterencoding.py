@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error
+# pylint: disable=missing-module-docstring, wrong-import-position
 import unittest
 import sys
 import os

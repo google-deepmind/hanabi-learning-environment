@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, too-few-public-methods
+# pylint: disable=missing-module-docstring, wrong-import-position, too-few-public-methods
 class Buffer:
     '''buffer'''
     def __init__(self) -> None:
