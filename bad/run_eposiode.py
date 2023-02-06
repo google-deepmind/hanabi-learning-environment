@@ -4,17 +4,18 @@ import os
 import time
 
 import numpy as np
-
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from hanabi_learning_environment import pyhanabi, rl_env
-from bad.bad_agent import BadAgent
 from bad.action_network import ActionNetwork
 from bad.policy import Policy
 from bad.set_extra_observation import SetExtraObservation
 from bad.run_episode_result import RunEpisodeResult
+from bad.bad_agent import BadAgent
+from bad.constants import Constants
+
 
 class RunEpisode:
     '''runs an episode'''
@@ -22,7 +23,7 @@ class RunEpisode:
         '''init'''
         self.policy = Policy(network)
         players:int = 2
-        self.hanabi_environment = rl_env.make('Hanabi-Group-7', players, \
+        self.hanabi_environment = rl_env.make(Constants.environment_name, players, \
             pyhanabi.AgentObservationType.CARD_KNOWLEDGE.CARD_KNOWLEDGE)
         self.agents = [BadAgent(self.policy, self.hanabi_environment), \
             BadAgent(self.policy, self.hanabi_environment)]

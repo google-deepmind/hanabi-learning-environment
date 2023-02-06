@@ -10,9 +10,14 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from bad.run_eposiode import RunEpisode
-from bad.train_epoch import TrainEpoch
+from bad.collect_episode_data import CollectEpisodeData
 from bad.print_episode_selfplay import PrintEpisodeSelfPlay
 from bad.print_total_selfplay import PrintTotalSelfPlay
+from bad.collect_episode_data_result import CollectEpisodeDataResult
+from bad.collect_episodes_data_results import CollectEpisodesDataResults
+from hanabi_learning_environment import pyhanabi, rl_env
+from bad.constants import Constants
+
 
 class Runner:
     '''runner'''
@@ -26,10 +31,22 @@ class Runner:
     def train(self, episodes: int, batch_size:int) -> None:
         '''train'''
         print('train')
+
+        players:int = 2
+
+        collect_episodes_result = CollectEpisodesDataResults()
         for episode in range(episodes):
+
             print(f"begin training for {episode}")
-            train_epoch = TrainEpoch()
-            self.network = train_epoch.train(batch_size)
+            hanabi_environment = rl_env.make(Constants.environment_name, players, \
+            pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
+            hanabi_observation = hanabi_environment.reset()
+
+            collect_episode_data = CollectEpisodeData()
+            episode_data_result: CollectEpisodeDataResult = collect_episode_data.collect(hanabi_environment)
+            collect_episodes_result.add(episode_data_result)
+
+        a: int = 0
 
     def self_play(self, episodes: int) -> None:
         '''self play'''

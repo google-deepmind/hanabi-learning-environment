@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring too-few-public-methods)
+# pylint: disable=missing-module-docstring too-few-public-methods, pointless-string-statement
 import numpy as np
 
 
@@ -17,5 +17,6 @@ class BayesianAction:
             if not exists:
                 all_actions[action] = -float('inf')
 
-        result = np.argmax(all_actions, axis=0)
-        return int(result)
+        '''FIXME: random'''
+        next_action = np.argmax(all_actions, axis=0)
+        return int(next_action)
