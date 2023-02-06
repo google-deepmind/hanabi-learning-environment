@@ -20,9 +20,9 @@ class FireworkRank():
 
         self.red = self.convert_firework_rank_color('R')
         self.yellow = self.convert_firework_rank_color('Y')
-        # self.green = self.convert_firework_rank_color('G')
-        # self.white  = self.convert_firework_rank_color('W')
-        # self.blue = self.convert_firework_rank_color('B')
+        self.green = self.convert_firework_rank_color('G')
+        self.white  = self.convert_firework_rank_color('W')
+        self.blue = self.convert_firework_rank_color('B')
 
     def convert_firework_rank_color(self, color: string) -> np.ndarray:
         ''' convert firework rank color '''

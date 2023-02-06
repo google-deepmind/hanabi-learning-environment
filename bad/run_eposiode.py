@@ -23,7 +23,8 @@ class RunEpisode:
         '''init'''
         self.policy = Policy(network)
         players:int = 2
-        self.hanabi_environment = rl_env.make(Constants.environment_name, players, \
+        constants = Constants()
+        self.hanabi_environment = rl_env.make(constants.environment_name, players, \
             pyhanabi.AgentObservationType.CARD_KNOWLEDGE.CARD_KNOWLEDGE)
         self.agents = [BadAgent(self.policy, self.hanabi_environment), \
             BadAgent(self.policy, self.hanabi_environment)]

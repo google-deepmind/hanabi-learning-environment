@@ -7,4 +7,4 @@ class Constants:
 
     def __init__(self) -> None:
         '''init'''
-        self.environment_name: string = 'Hanabi-Group-7'
+        self.environment_name: string = 'Hanabi-Full'

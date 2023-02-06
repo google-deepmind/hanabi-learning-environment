@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-many-function-args
+# pylint: disable=missing-module-docstring, wrong-import-position, import-error, no-member, no-name-in-module, too-many-function-args, ungrouped-imports
 import random
 import sys
 import os
@@ -18,7 +18,6 @@ from bad.collect_episodes_data_results import CollectEpisodesDataResults
 from hanabi_learning_environment import pyhanabi, rl_env
 from bad.constants import Constants
 
-
 class Runner:
     '''runner'''
     def __init__(self) -> None:
@@ -28,25 +27,27 @@ class Runner:
         random.seed(seed)
         self.network = None
 
-    def train(self, episodes: int, batch_size:int) -> None:
+    def train_batch(self, batch_size:int) -> None:
         '''train'''
         print('train')
 
         players:int = 2
 
         collect_episodes_result = CollectEpisodesDataResults()
-        for episode in range(episodes):
 
-            print(f"begin training for {episode}")
-            hanabi_environment = rl_env.make(Constants.environment_name, players, \
+        while len(collect_episodes_result.results) < batch_size:
+
+            constants = Constants()
+            hanabi_environment = rl_env.make(constants.environment_name, players, \
             pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
             hanabi_observation = hanabi_environment.reset()
 
             collect_episode_data = CollectEpisodeData()
-            episode_data_result: CollectEpisodeDataResult = collect_episode_data.collect(hanabi_environment)
+            episode_data_result: CollectEpisodeDataResult = \
+                 collect_episode_data.collect(hanabi_observation, hanabi_environment)
+
             collect_episodes_result.add(episode_data_result)
 
-        a: int = 0
 
     def self_play(self, episodes: int) -> None:
         '''self play'''

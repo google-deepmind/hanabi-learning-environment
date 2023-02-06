@@ -6,7 +6,7 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from hanabi_learning_environment import pyhanabi, rl_env
+from hanabi_learning_environment import rl_env
 from bad.action_network import ActionNetwork
 from bad.encoding.observationconverter import ObservationConverter
 from bad.set_extra_observation import SetExtraObservation
@@ -18,7 +18,8 @@ class CollectEpisodeData:
     def __init__(self) -> None:
         pass
 
-    def collect(self, hanbi_environment: rl_env.HanabiEnv) -> CollectEpisodeDataResult:
+    def collect(self, hanabi_observation:dict, hanbi_environment: rl_env.HanabiEnv) \
+         -> CollectEpisodeDataResult:
         '''train within an environment'''
 
         copied_state = hanbi_environment.state.copy()
