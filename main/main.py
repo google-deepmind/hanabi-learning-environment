@@ -9,12 +9,12 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.selfplay import Runner
+from bad.selfplay import SelfPlay
 from bad.train_batch import TrainBatch
 
 def main() -> None:
     '''main'''
-    batch_size: int = 500
+    batch_size: int = 50
     episodes_running = 100
 
     print(f'welcome to bad agent with tf version: {tf.__version__}')
@@ -23,8 +23,8 @@ def main() -> None:
     train_batch = TrainBatch()
     training_result = train_batch.run(batch_size=batch_size)
 
-    runner = Runner()
-    runner.self_play(episodes_running)
+    self_play = SelfPlay(training_result.network)
+    self_play.run(episodes_running)
 
     print("finish with everything")
 if __name__ == "__main__":

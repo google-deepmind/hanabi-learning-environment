@@ -8,10 +8,12 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from bad.collect_episode_data_result import CollectEpisodeDataResult
+from bad.action_network import ActionNetwork
 
 class CollectEpisodesDataResults:
     '''collect episode data results'''
-    def __init__(self) -> None:
+    def __init__(self, network: ActionNetwork) -> None:
+        self.network = network
         self.results = []
 
     def add(self, result: CollectEpisodeDataResult) -> None:

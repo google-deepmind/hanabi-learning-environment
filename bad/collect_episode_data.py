@@ -15,9 +15,11 @@ from bad.collect_episode_data_result import CollectEpisodeDataResult
 
 class CollectEpisodeData:
     '''train episode'''
-    def __init__(self, hanabi_observation:dict, hanabi_environment: rl_env.HanabiEnv) -> None:
+    def __init__(self, hanabi_observation:dict, hanabi_environment: rl_env.HanabiEnv, \
+         network: ActionNetwork) -> None:
         self.hanabi_observation = hanabi_observation
         self.hanabi_environment = hanabi_environment
+        self.network = network
 
     def collect(self) \
          -> CollectEpisodeDataResult:
@@ -40,16 +42,12 @@ class CollectEpisodeData:
         observation_converter: ObservationConverter = ObservationConverter()
         observation = observation_converter.convert(self.hanabi_observation)
 
-        network: ActionNetwork = ActionNetwork()
-        network.build(observation, max_actions)
-
         done = False
         while not done:
 
             # legal_actions = self.hanabi_environment.state.legal_moves()
-            bad = network.train_observation(observation)
+            bad = self.network.get_action(observation)
             next_action = bad.decode_action(self.hanabi_environment.state.legal_moves_int())
-            # next_move = self.hanabi_environment.game.get_move(next_action)
 
             observation_after_step, reward, done, _ = self.hanabi_environment.step(next_action)
 
@@ -61,4 +59,4 @@ class CollectEpisodeData:
             observation = observation_converter.convert(observation_after_step)
             self.hanabi_observation = observation_after_step
 
-        return CollectEpisodeDataResult(network, buffer)
+        return CollectEpisodeDataResult(buffer)

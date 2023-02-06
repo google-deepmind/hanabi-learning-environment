@@ -6,11 +6,11 @@ currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
-from bad.action_network import ActionNetwork
 from bad.buffer import Buffer
 
 
 class CollectEpisodeDataResult:
-    def __init__(self, action_network: ActionNetwork, buffer: Buffer) -> None:
-        self.action_network = action_network
+    '''collect episode data result'''
+    def __init__(self, buffer: Buffer) -> None:
+        ''''init'''
         self.buffer = buffer

@@ -10,46 +10,20 @@ parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from bad.run_eposiode import RunEpisode
-from bad.collect_episode_data import CollectEpisodeData
 from bad.print_episode_selfplay import PrintEpisodeSelfPlay
 from bad.print_total_selfplay import PrintTotalSelfPlay
-from bad.collect_episode_data_result import CollectEpisodeDataResult
-from bad.collect_episodes_data_results import CollectEpisodesDataResults
-from hanabi_learning_environment import pyhanabi, rl_env
-from bad.constants import Constants
+from bad.action_network import ActionNetwork
 
-class Runner:
-    '''runner'''
-    def __init__(self) -> None:
+class SelfPlay:
+    '''self play'''
+    def __init__(self, network: ActionNetwork) -> None:
         seed = 42
         tf.random.set_seed(seed)
         np.random.seed(seed)
         random.seed(seed)
-        self.network = None
+        self.network = network
 
-    def train_batch(self, batch_size:int) -> None:
-        '''train'''
-        print('train')
-
-        players:int = 2
-
-        collect_episodes_result = CollectEpisodesDataResults()
-
-        while len(collect_episodes_result.results) < batch_size:
-
-            constants = Constants()
-            hanabi_environment = rl_env.make(constants.environment_name, players, \
-            pyhanabi.AgentObservationType.CARD_KNOWLEDGE.SEER)
-            hanabi_observation = hanabi_environment.reset()
-
-            collect_episode_data = CollectEpisodeData()
-            episode_data_result: CollectEpisodeDataResult = \
-                 collect_episode_data.collect(hanabi_observation, hanabi_environment)
-
-            collect_episodes_result.add(episode_data_result)
-
-
-    def self_play(self, episodes: int) -> None:
+    def run(self, episodes: int) -> None:
         '''self play'''
         print('self play')
 
