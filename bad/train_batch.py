@@ -27,27 +27,27 @@ class TrainBatch:
 
         players:int = 2
         network: ActionNetwork = ActionNetwork()
-
         collect_episodes_result = CollectEpisodesDataResults(network)
+        constants = Constants()
+        seo = SetExtraObservation()
+        hanabi_environment = rl_env.make(constants.environment_name, players, \
+                                         pyhanabi.AgentObservationType.SEER)
+        observation_converter: ObservationConverter = ObservationConverter()
+        
+        while len(collect_episodes_result.results) < batch_size: 
 
-        while len(collect_episodes_result.results) < batch_size:
-
-            constants = Constants()
-            hanabi_environment = rl_env.make(constants.environment_name, players, \
-            pyhanabi.AgentObservationType.SEER)
             hanabi_observation = hanabi_environment.reset()
             max_moves: int = hanabi_environment.game.max_moves() + 1
             max_actions = max_moves + 1 # 0 index based
 
-            seo = SetExtraObservation()
+            
             seo.set_extra_observation(hanabi_observation, max_moves, max_actions, \
                 hanabi_environment.state.legal_moves_int())
-            observation_converter: ObservationConverter = ObservationConverter()
+            
             network.build(observation_converter.convert(hanabi_observation), max_actions)
 
             ce_data = CollectEpisodeData(hanabi_observation, hanabi_environment, network)
-            episode_data_result: CollectEpisodeDataResult = \
-                 ce_data.collect()
+            episode_data_result: CollectEpisodeDataResult = ce_data.collect()
 
             collect_episodes_result.add(episode_data_result)
 
