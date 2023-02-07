@@ -1,7 +1,9 @@
 # pylint: disable=missing-module-docstring, wrong-import-position, no-name-in-module
 
 import os
+import random
 import sys
+import numpy as np
 import tensorflow as tf
 
 
@@ -14,6 +16,11 @@ from bad.train_batch import TrainBatch
 
 def main() -> None:
     '''main'''
+    seed = 42
+    tf.random.set_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+
     batch_size: int = 50
     episodes_running = 100
 

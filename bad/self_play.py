@@ -17,10 +17,6 @@ from bad.action_network import ActionNetwork
 class SelfPlay:
     '''self play'''
     def __init__(self, network: ActionNetwork) -> None:
-        seed = 42
-        tf.random.set_seed(seed)
-        np.random.seed(seed)
-        random.seed(seed)
         self.network = network
 
     def run(self, episodes: int) -> None:

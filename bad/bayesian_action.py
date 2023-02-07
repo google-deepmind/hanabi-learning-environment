@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring too-few-public-methods, pointless-string-statement
 import numpy as np
+import tensorflow_probability as tfp
 
 
 class BayesianAction:
@@ -17,6 +18,8 @@ class BayesianAction:
             if not exists:
                 all_actions[action] = -float('inf')
 
-        '''FIXME: random'''
-        next_action = np.argmax(all_actions, axis=0)
+        # next_action = np.random.choice(all_actions)
+        cat = tfp.distributions.Categorical(logits=all_actions)
+        next_action = int(cat.sample().numpy().T)
+
         return int(next_action)
