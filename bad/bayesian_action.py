@@ -18,7 +18,6 @@ class BayesianAction:
             if not exists:
                 all_actions[action] = -float('inf')
 
-        # next_action = np.random.choice(all_actions)
         cat = tfp.distributions.Categorical(logits=all_actions)
         next_action = int(cat.sample().numpy().T)
 
