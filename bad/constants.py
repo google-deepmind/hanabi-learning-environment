@@ -5,4 +5,4 @@ class Constants:
 
     def __init__(self) -> None:
         '''init'''
-        self.environment_name = 'Hanabi-Full'
+        self.environment_name = 'Hanabi-Group-7'
