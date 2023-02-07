@@ -1,9 +1,6 @@
 # pylint: disable=missing-module-docstring, wrong-import-position, too-few-public-methods
-import random
 import sys
 import os
-import numpy as np
-import tensorflow as tf
 
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
@@ -17,10 +14,6 @@ from bad.action_network import ActionNetwork
 class SelfPlay:
     '''self play'''
     def __init__(self, network: ActionNetwork) -> None:
-        seed = 42
-        tf.random.set_seed(seed)
-        np.random.seed(seed)
-        random.seed(seed)
         self.network = network
 
     def run(self, episodes: int) -> None:
