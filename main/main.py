@@ -13,6 +13,7 @@ sys.path.append(parentPath)
 
 from bad.self_play import SelfPlay
 from bad.train_batch import TrainBatch
+from bad.action_network import ActionNetwork
 
 def main() -> None:
     '''main'''
@@ -23,14 +24,17 @@ def main() -> None:
 
     batch_size: int = 50
     episodes_running = 100
+    discount = 0.95
 
     print(f'welcome to bad agent with tf version: {tf.__version__}')
     print(f'running {episodes_running} episodes')
 
-    train_batch = TrainBatch()
-    training_result = train_batch.run(batch_size=batch_size)
+    network: ActionNetwork = ActionNetwork()
 
-    self_play = SelfPlay(training_result.network)
+    train_batch = TrainBatch(network)
+    training_result = train_batch.run(batch_size=batch_size, discount=discount)
+
+    self_play = SelfPlay(network)
     self_play.run(episodes_running)
 
     print("finish with everything")

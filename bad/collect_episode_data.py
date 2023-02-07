@@ -45,7 +45,6 @@ class CollectEpisodeData:
         done = False
         while not done:
 
-            # legal_actions = self.hanabi_environment.state.legal_moves()
             bad = self.network.get_action(observation)
             next_action = bad.decode_action(self.hanabi_environment.state.legal_moves_int())
 

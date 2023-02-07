@@ -2,9 +2,9 @@
 class Buffer:
     '''buffer'''
     def __init__(self) -> None:
-        self.hanabi_observation = []
-        self.actions = []
-        self.rewards = []
+        self.hanabi_observation: list[dict] = []
+        self.actions: list[int] = []
+        self.rewards: list[int] = []
 
     def add(self, hanabi_observation: dict, next_action: int, reward: int) -> None:
         '''add'''
