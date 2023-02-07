@@ -1,9 +1,6 @@
 # pylint: disable=missing-module-docstring, wrong-import-position, too-few-public-methods
-import random
 import sys
 import os
-import numpy as np
-import tensorflow as tf
 
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
