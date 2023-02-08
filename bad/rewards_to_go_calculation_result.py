@@ -11,8 +11,8 @@ from bad.rewards_to_go_episode_calculation_result import RewardsToGoEpisodeCalcu
 class RewardsToGoCalculationResult:
     '''RewardToGoCalculationResult'''
     def __init__(self) -> None:
-        self.result: list[RewardsToGoEpisodeCalculationResult] = []
+        self.results: list[RewardsToGoEpisodeCalculationResult] = []
 
     def append(self, result: RewardsToGoEpisodeCalculationResult):
         '''append'''
-        self.result.append(result)
+        self.results.append(result)

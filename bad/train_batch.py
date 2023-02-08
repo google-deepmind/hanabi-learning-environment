@@ -17,6 +17,7 @@ from bad.encoding.observationconverter import ObservationConverter
 from bad.set_extra_observation import SetExtraObservation
 from bad.reward_to_go_calculation import RewardToGoCalculation
 from bad.train_batch_result import TrainBatchResult
+from bad.rewards_to_go_calculation_result import RewardsToGoCalculationResult
 
 class TrainBatch:
     '''train batch'''
@@ -51,13 +52,27 @@ class TrainBatch:
 
         return collect_episodes_result
 
-    def run(self, batch_size: int, discount: float) -> TrainBatchResult:
+    def reward_to_go_calculation(self, collected_data: CollectEpisodesDataResults, \
+        gamma: float) -> RewardsToGoCalculationResult:
+        '''reward to go calculation'''
+        reward_to_go_calculation = RewardToGoCalculation(gamma)        
+        return reward_to_go_calculation.run(collected_data)
+
+    def backpropagation(self, calc_result: RewardsToGoCalculationResult) -> None:
+        '''backpropagation'''
+
+        for calc_result_result in calc_result.results:
+            self.network.backpropagation(calc_result_result.mean_loss())
+
+    def run(self, batch_size: int, gamma: float) -> TrainBatchResult:
         '''init'''
         print('train')
         players:int = 2
+
         collected_data = self.collect_data(batch_size, players)
 
-        reward_to_go_calculation = RewardToGoCalculation(discount)
-        reward_to_go_calculation.run(collected_data)
+        reward_calculation_result = self.reward_to_go_calculation(collected_data, gamma)
+
+        self.backpropagation(reward_calculation_result)
 
         return TrainBatchResult()

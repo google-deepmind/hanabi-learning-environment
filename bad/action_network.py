@@ -38,3 +38,19 @@ class ActionNetwork():
 
         result = self.model(reshaped)
         return BayesianAction(result.numpy()[0])
+
+    def backpropagation(self, loss_value: float) -> None:
+        '''backpropagation'''
+
+        model = self.model
+        # Instantiate an optimizer.
+        optimizer = tf.keras.optimizers.Adam()
+
+        # Open a GradientTape.
+        #with tf.GradientTape() as tape:
+
+            # Get gradients of loss wrt the weights.
+        #    gradients = tape.gradient(loss_value, model.trainable_weights)
+
+        # Update the weights of the model.
+        #optimizer.apply_gradients(zip(gradients, model.trainable_weights))

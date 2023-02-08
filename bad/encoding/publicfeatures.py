@@ -28,12 +28,12 @@ class PublicFeatures:
     def convert_life_tokens(self) -> np.ndarray:
         ''' convert life tokens '''
         life_tokens = self.observation['player_observations'][self.curr_player]['life_tokens']
-        return tf.keras.utils.to_categorical(life_tokens, num_classes=4, dtype=int)
+        return tf.keras.utils.to_categorical(life_tokens, num_classes=16, dtype=int)
 
     def convert_information_tokens(self) -> np.ndarray:
         ''' convert information tokens '''
         in_to = self.observation['player_observations'][self.curr_player]['information_tokens']
-        return tf.keras.utils.to_categorical(in_to, num_classes=9, dtype=int)
+        return tf.keras.utils.to_categorical(in_to, num_classes=16, dtype=int)
 
     def convert_current_player(self) -> np.ndarray:
         '''converts current player'''
