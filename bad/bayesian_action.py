@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring too-few-public-methods, pointless-string-statement, fixme
+# pylint: disable=missing-module-docstring too-few-public-methods, pointless-string-statement,wrong-import-position, fixme
 import sys
 import os
 

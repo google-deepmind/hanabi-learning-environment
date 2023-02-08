@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position
+# pylint: disable=missing-module-docstring, wrong-import-position, unused-variable, unused-argument
 import sys
 import os
 import tensorflow as tf

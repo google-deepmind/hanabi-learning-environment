@@ -55,7 +55,7 @@ class TrainBatch:
     def reward_to_go_calculation(self, collected_data: CollectEpisodesDataResults, \
         gamma: float) -> RewardsToGoCalculationResult:
         '''reward to go calculation'''
-        reward_to_go_calculation = RewardToGoCalculation(gamma)        
+        reward_to_go_calculation = RewardToGoCalculation(gamma)
         return reward_to_go_calculation.run(collected_data)
 
     def backpropagation(self, calc_result: RewardsToGoCalculationResult) -> None:
