@@ -46,11 +46,12 @@ class CollectEpisodeData:
         while not done:
 
             bad = self.network.get_action(observation)
-            next_action = bad.decode_action(self.hanabi_environment.state.legal_moves_int())
+            bad_result = bad.decode_action(self.hanabi_environment.state.legal_moves_int())
+            next_action = bad_result.sampled_action
 
             observation_after_step, reward, done, _ = self.hanabi_environment.step(next_action)
 
-            buffer.add(self.hanabi_observation, next_action, reward)
+            buffer.append(self.hanabi_observation, bad_result, reward)
 
             seo.set_extra_observation(observation_after_step, next_action, max_actions, \
                 self.hanabi_environment.state.legal_moves_int())

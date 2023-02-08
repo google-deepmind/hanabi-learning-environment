@@ -4,14 +4,14 @@ import sys
 import os
 import numpy as np
 
+
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 sys.path.append(parentPath)
 
 from bad.collect_episodes_data_results import CollectEpisodesDataResults
-from bad.rewards_to_go_calculation_result import RewardsToGoCalculationResult
 from bad.rewards_to_go_episode_calculation_result import RewardsToGoEpisodeCalculationResult
-
+from bad.rewards_to_go_calculation_result import RewardsToGoCalculationResult
 
 class RewardToGoCalculation:
     ''''calculate reward to go'''
@@ -26,9 +26,17 @@ class RewardToGoCalculation:
         for collected_data_result in collected_data_results.results:
             ep_result = RewardsToGoEpisodeCalculationResult()
             result.append(ep_result)
+            buffer = collected_data_result.buffer
 
-            for index in range(len(collected_data_result.buffer.rewards)):
-                current_reward = float(np.sum(collected_data_result.buffer.rewards[index:]))
-                ep_result.append(current_reward * np.power(self.gamma, index + 1))
+            for index in range(len(buffer.rewards)):
+                current_reward = float(np.sum(buffer.rewards[index:]))
+                discounted_reward = current_reward * np.power(self.gamma, index + 1)
+
+                categorical = buffer.actions[index].categorical
+                sampled_action = buffer.actions[index].sampled_action
+                # loss calculation
+                current_loss = -(discounted_reward * float(categorical.log_prob(sampled_action).numpy()))
+
+                ep_result.append(discounted_reward, current_loss)
 
         return result

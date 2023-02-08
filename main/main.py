@@ -24,7 +24,7 @@ def main() -> None:
 
     batch_size: int = 50
     episodes_running = 100
-    discount = 0.95
+    gamma = 0.95
 
     print(f'welcome to bad agent with tf version: {tf.__version__}')
     print(f'running {episodes_running} episodes')
@@ -32,7 +32,7 @@ def main() -> None:
     network: ActionNetwork = ActionNetwork()
 
     train_batch = TrainBatch(network)
-    training_result = train_batch.run(batch_size=batch_size, discount=discount)
+    training_result = train_batch.run(batch_size=batch_size, gamma=gamma)
 
     self_play = SelfPlay(network)
     self_play.run(episodes_running)
