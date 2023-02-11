@@ -34,9 +34,10 @@ class RewardToGoCalculation:
 
                 categorical = buffer.actions[index].categorical
                 sampled_action = buffer.actions[index].sampled_action
+                observation = buffer.observation[index]
                 # loss calculation
                 current_loss = -(discounted_reward * float(categorical.log_prob(sampled_action).numpy()))
 
-                ep_result.append(discounted_reward, current_loss)
+                ep_result.append(discounted_reward, current_loss, observation)
 
         return result

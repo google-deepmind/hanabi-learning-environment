@@ -62,6 +62,7 @@ class TrainBatch:
         '''backpropagation'''
 
         for calc_result_result in calc_result.results:
+            self.network.train_step(calc_result_result.observation[0], 10)
             self.network.backpropagation(calc_result_result.mean_loss())
 
     def run(self, batch_size: int, gamma: float) -> TrainBatchResult:
