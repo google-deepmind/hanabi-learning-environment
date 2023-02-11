@@ -20,9 +20,6 @@ class Hands():
             if rank == -1:
                 rank = 0
 
-                own_card = Card('None', 0)
-            else:
-                
             own_card = Card(card['color'], rank)
             self.own_cards = np.append(self.own_cards, own_card.color)
             self.own_cards = np.append(self.own_cards, own_card.rank)
