@@ -18,8 +18,8 @@ class Buffer:
         self.actions: list[BayesianActionResult] = []
         self.rewards: list[int] = []
 
-    def append(self, hanabi_observation: dict, observation: Observation, action_result: BayesianActionResult, \
-        reward: int) -> None:
+    def append(self, hanabi_observation: dict, observation: Observation, \
+    action_result: BayesianActionResult, reward: int) -> None:
         '''add'''
         self.hanabi_observation.append(hanabi_observation)
         self.observation.append(observation)

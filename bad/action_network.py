@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position, unused-variable, unused-argument, not-callable, invalid-name
+# pylint: disable=missing-module-docstring, wrong-import-position, unused-variable, unused-argument, not-callable, invalid-name, fixme, unreachable
 import sys
 import os
 import tensorflow as tf
@@ -41,7 +41,7 @@ class ActionNetwork():
 
     def get_action(self, observation: Observation) -> BayesianAction:
         '''get action'''
-       
+
         result = self.model(self.get_model_input(observation))
         return BayesianAction(result.numpy()[0])
 
