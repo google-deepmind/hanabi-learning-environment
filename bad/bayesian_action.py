@@ -1,5 +1,15 @@
-# pylint: disable=missing-module-docstring too-few-public-methods, pointless-string-statement
+# pylint: disable=missing-module-docstring too-few-public-methods, pointless-string-statement,wrong-import-position, fixme
+import sys
+import os
+
 import numpy as np
+import tensorflow_probability as tfp
+
+currentPath = os.path.dirname(os.path.realpath(__file__))
+parentPath = os.path.dirname(currentPath)
+sys.path.append(parentPath)
+
+from bad.bayesian_action_result import BayesianActionResult
 
 
 class BayesianAction:
@@ -7,7 +17,7 @@ class BayesianAction:
     def __init__(self, actions: np.ndarray) -> None:
         self.actions = actions
 
-    def decode_action(self, legal_moves:np.ndarray) -> int:
+    def decode_action(self, legal_moves:np.ndarray) -> BayesianActionResult:
         '''returns a choice'''
         legal_moves_int = legal_moves.tolist()
         all_actions = self.actions.copy()
@@ -17,6 +27,8 @@ class BayesianAction:
             if not exists:
                 all_actions[action] = -float('inf')
 
-        '''FIXME: random'''
-        next_action = np.argmax(all_actions, axis=0)
-        return int(next_action)
+        # TODO: verify
+        cat = tfp.distributions.Categorical(logits=all_actions)
+        next_action = int(cat.sample().numpy().T)
+
+        return BayesianActionResult(int(next_action), cat)
