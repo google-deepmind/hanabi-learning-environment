@@ -1,13 +1,11 @@
 # pylint: disable=missing-module-docstring, wrong-import-position, too-few-public-methods
+
 import sys
 import os
 import numpy as np
 
-currentPath = os.path.dirname(os.path.realpath(__file__))
-parentPath = os.path.dirname(currentPath)
-sys.path.append(parentPath)
+from card import Card
 
-from bad.encoding.card import Card
 
 class Hands():
     '''hand'''
@@ -44,3 +42,7 @@ class Hands():
         if fill_with_zeros > 0:
             cards = np.append(cards, np.zeros((fill_with_zeros, ), dtype=int))
         return cards
+
+
+if __name__ == "__main__":
+    print("Test")

@@ -16,7 +16,7 @@ class Observation:
         self.public_features = PublicFeatures(observation)
         self.private_features = PrivateFeatures(observation)
 
-    def to_array(self) -> list:
+    def to_one_hot_vec(self) -> list:
         '''one single vecor'''
         result = np.concatenate(( \
             self.public_features.life_tokens_left, \
