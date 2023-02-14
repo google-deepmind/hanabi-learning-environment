@@ -39,7 +39,9 @@ class LikelihoodHandCard(dict):
             dict: _description_
         """
 
-        if old_likelihood is None and last_act is None:
+        if (old_likelihood is None 
+            and last_act is None
+            and observation is None):
             '''Initialize the likelihood for the first time'''
             return self.first_init_likelihood(constants)
 
