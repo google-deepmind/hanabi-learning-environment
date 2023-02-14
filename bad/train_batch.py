@@ -15,40 +15,66 @@ from hanabi_learning_environment import pyhanabi, rl_env
 from bad.action_network import ActionNetwork
 from bad.encoding.observationconverter import ObservationConverter
 from bad.set_extra_observation import SetExtraObservation
+from bad.reward_to_go_calculation import RewardToGoCalculation
+from bad.train_batch_result import TrainBatchResult
+from bad.rewards_to_go_calculation_result import RewardsToGoCalculationResult
 
 class TrainBatch:
     '''train batch'''
-    def __init__(self) -> None:
-        pass
-
-    def run(self, batch_size: int) -> CollectEpisodesDataResults:
+    def __init__(self, network: ActionNetwork) -> None:
         '''init'''
-        print('train')
+        self.network = network
 
-        players:int = 2
-        network: ActionNetwork = ActionNetwork()
-        collect_episodes_result = CollectEpisodesDataResults(network)
+    def collect_data(self, batch_size:int, players: int) -> CollectEpisodesDataResults:
+        '''collect data'''
+        collect_episodes_result = CollectEpisodesDataResults()
         constants = Constants()
         seo = SetExtraObservation()
         hanabi_environment = rl_env.make(constants.environment_name, players, \
-                                         pyhanabi.AgentObservationType.SEER)
+            pyhanabi.AgentObservationType.SEER)
         observation_converter: ObservationConverter = ObservationConverter()
-        
-        while len(collect_episodes_result.results) < batch_size: 
 
+        while len(collect_episodes_result.results) < batch_size:
+            
             hanabi_observation = hanabi_environment.reset()
             max_moves: int = hanabi_environment.game.max_moves() + 1
             max_actions = max_moves + 1 # 0 index based
 
-            
             seo.set_extra_observation(hanabi_observation, max_moves, max_actions, \
                 hanabi_environment.state.legal_moves_int())
             
-            network.build(observation_converter.convert(hanabi_observation), max_actions)
+            self.network.build(observation_converter.convert(hanabi_observation), max_actions)
 
-            ce_data = CollectEpisodeData(hanabi_observation, hanabi_environment, network)
-            episode_data_result: CollectEpisodeDataResult = ce_data.collect()
+            ce_data = CollectEpisodeData(hanabi_observation, hanabi_environment, self.network)
+            episode_data_result: CollectEpisodeDataResult = \
+                ce_data.collect() # hier werden die Daten gesammelt
 
             collect_episodes_result.add(episode_data_result)
 
         return collect_episodes_result
+
+    def reward_to_go_calculation(self, collected_data: CollectEpisodesDataResults, \
+        gamma: float) -> RewardsToGoCalculationResult:
+        '''reward to go calculation'''
+        reward_to_go_calculation = RewardToGoCalculation(gamma)
+        return reward_to_go_calculation.run(collected_data)
+
+    def backpropagation(self, calc_result: RewardsToGoCalculationResult) -> None:
+        '''backpropagation'''
+
+        for calc_result_result in calc_result.results:
+            self.network.train_step(calc_result_result.observation[0], 10)
+            self.network.backpropagation(calc_result_result.mean_loss())
+
+    def run(self, batch_size: int, gamma: float) -> TrainBatchResult:
+        '''init'''
+        print('train')
+        players:int = 2
+
+        collected_data = self.collect_data(batch_size, players)
+
+        reward_calculation_result = self.reward_to_go_calculation(collected_data, gamma)
+
+        self.backpropagation(reward_calculation_result)
+
+        return TrainBatchResult()

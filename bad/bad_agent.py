@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, wrong-import-position
+# pylint: disable=missing-module-docstring, wrong-import-position, line-too-long
 import sys
 import os
 
@@ -21,10 +21,10 @@ class BadAgent(Agent):
 
     def act(self, observation, public_belief) -> BadAgentActingResult:
         '''act'''
-        bad = self.policy.get_action(self.observation_converter.convert(observation), 
-            PublicBeliefGlobalEnc(public_belief))
-        next_action = bad.decode_action(self.hanabi_environment.state.legal_moves_int())
-        observation_after_step, reward, done, _ = self.hanabi_environment.step(next_action)
+        bad = self.policy.get_action(self.observation_converter.convert(observation),
+                                     PublicBeliefGlobalEnc(public_belief))
+        action_result = bad.decode_action(self.hanabi_environment.state.legal_moves_int())
+        observation_after_step, reward, done, _ = self.hanabi_environment.step(action_result.sampled_action)
         return BadAgentActingResult(observation_after_step, done, int(reward))
 
     def reset(self, config):
