@@ -587,13 +587,13 @@ def make(environment_name: string, num_players: int, agentObservationType: pyhan
     return HanabiEnv(
         config={
             "colors":
-                2,
+                3,
             "ranks":
-                2,
+                4,
             "players":
                 num_players,
             "hand_size":
-                2,
+                3,
             "max_information_tokens":
                 1,
             "max_life_tokens":
