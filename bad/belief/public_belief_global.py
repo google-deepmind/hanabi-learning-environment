@@ -1,52 +1,42 @@
-
-import copy
-
 import sys
 import os
-import getopt
+
+from public_belief_player import PublicBeliefPlayer
+from hint_matrix_global import HintMatrix
+from ftpubvec import RemaingCards
+from build_hanabi_env import get_hanabi_env
 
 currentPath = os.path.dirname(os.path.realpath(__file__))
 parentPath = os.path.dirname(currentPath)
 parentPath2 = os.path.dirname(parentPath)
 sys.path.append(parentPath2)
 
-from hint_matrix_global import HintMatrix
-from ftpubvec import RemaingCards
+
 from hanabi_learning_environment.rl_env import HanabiEnv
-from public_belief_player import PublicBeliefPlayer
-from build_observation import get_observation
+from constants import Constants
 
 
 class PublicBelief(list):
     
-    def __init__(self, hanabi_env: HanabiEnv):
-        self.max_ply = 2
-        self.hint_matrix = None
-        self.observations = None
-        self.remcards = None  
-        
-        self.num_colors_left = {'B':  10, 'G': 10,'R': 10,'W': 10,'Y': 10}        
-        self.num_ranks_left = {0:  15, 1: 10, 2: 10, 3: 10, 4: 5}
-       
-        super().__init__(self.init(hanabi_env))
-        
-    def init(self, hanabi_env: HanabiEnv):
-        
-        self.hanabi_env = hanabi_env
+    def __init__(self, hanabi_env: HanabiEnv, constants: Constants):
+        observation = hanabi_env['player_observations'][0]
+        # Init rem_cards,hint_matrix and hanabi_env due to dubug purpose 
         self.rem_cards = RemaingCards(hanabi_env)
-        self.hint_matrix = HintMatrix(hanabi_env)
-        pub_belf = [PublicBeliefPlayer(hanabi_env['player_observations'][idx_ply], 
+        self.hint_matrix = HintMatrix(observation, self.rem_cards)
+        self.hanabi_env = hanabi_env
+        
+        #self.num_colors_left = {'B':  10, 'G': 10,'R': 10,'W': 10,'Y': 10}        
+        #self.num_ranks_left = {0:  15, 1: 10, 2: 10, 3: 10, 4: 5}
+       
+        super().__init__(self.init(hanabi_env, constants))
+        
+    def init(self, hanabi_env: HanabiEnv, constants: Constants):
+        pub_belf = [PublicBeliefPlayer(constants, idx_ply, 
                     self.rem_cards, self.hint_matrix[idx_ply]) 
-                    for idx_ply in range(self.max_ply)]
+                    for idx_ply in range(constants.num_ply)]
         return pub_belf 
 
-    def update(self, hanabi_env: HanabiEnv) -> None:
-        """Update PublicBelief based on the rem_cards and hint_matrix_player"""
-        self.rem_cards.update(hanabi_env)
-        self.hint_matrix.update(hanabi_env)
-        [self[idx_ply].update(hanabi_env['player_observations'][idx_ply]) 
-         for idx_ply in range(self.max_ply)]
-
+'''
     def get_private_belief_hand_card(self, agent_idx, card_idx):
         """Return private hand card belief
         This Belief takes into accounts the private knowledge and
@@ -113,9 +103,10 @@ class PublicBelief(list):
 
             else:
                 return True 
+'''
 
 if __name__ == "__main__":
-    hanabi_env = get_observation()
+    hanabi_env = get_hanabi_env()
     pub_belf = PublicBelief(hanabi_env)
     print()        
             

@@ -12,19 +12,17 @@ from hint_matrix_hand_card import HintMatrixHandCard
 from hanabi_learning_environment.rl_env import HanabiEnv
 
 
-class HintMatrixPlayer(dict):
-    def __init__(self, observations: HanabiEnv, 
-                       rem_cards: RemaingCards):
-        self.observations = observations
-        super().__init__(self.init())
+class HintMatrixPlayer(list):
+    def __init__(self, constants, idx_ply: int, rem_cards: RemaingCards):
+        self.idx_ply = idx_ply
+        super().__init__(self.__init(constants, rem_cards))
 
-    def init(self, observations: HanabiEnv, rem_cards: RemaingCards) -> dict:
-        hint_matrix_player = [HintMatrixHandCard(observations, rem_cards)]
+    def __init(self, constants, rem_cards: RemaingCards) -> list:
+        hint_matrix_player = [HintMatrixHandCard(constants, idx_card, rem_cards)
+                              for idx_card in range(constants.num_ply)]
         return hint_matrix_player
 
-    def update(self) -> None:
-        """Update HintMatrixPlayer based on the rem_cards and hint_matrix_hand_card"""
-        [hint_matrix_hand_card.update() for hint_matrix_hand_card in self.hint_matrix_player]
+
 
     
 
