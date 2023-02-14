@@ -10,6 +10,7 @@ from hanabi_learning_environment.rl_env import Agent, HanabiEnv
 from bad.bad_agent_acting_result import BadAgentActingResult
 from bad.policy import Policy
 from bad.encoding.observationconverter import ObservationConverter
+from bad.encoding.public_belief_global_enc import PublicBeliefGlobalEnc
 
 class BadAgent(Agent):
     ''' bad agent '''
@@ -18,9 +19,10 @@ class BadAgent(Agent):
         self.hanabi_environment = hanabi_environment
         self.observation_converter: ObservationConverter = ObservationConverter()
 
-    def act(self, observation) -> BadAgentActingResult:
+    def act(self, observation, public_belief) -> BadAgentActingResult:
         '''act'''
-        bad = self.policy.get_action(self.observation_converter.convert(observation))
+        bad = self.policy.get_action(self.observation_converter.convert(observation), 
+            PublicBeliefGlobalEnc(public_belief))
         next_action = bad.decode_action(self.hanabi_environment.state.legal_moves_int())
         observation_after_step, reward, done, _ = self.hanabi_environment.step(next_action)
         return BadAgentActingResult(observation_after_step, done, int(reward))
