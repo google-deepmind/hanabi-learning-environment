@@ -2,4 +2,6 @@
 hanabi_learning_environment/libpyhanabi.so
 _skbuild/*
 build/*
-ws2223_group7_hanabi_learning_environment_bad.egg-info/*0bad/belief/__init__.py
+ws2223_group7_hanabi_learning_environment_bad.egg-info/*0
+bad/belief/__init__.py
+bad/belief/__init__.py
