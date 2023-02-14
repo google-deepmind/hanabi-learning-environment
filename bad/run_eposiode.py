@@ -26,6 +26,7 @@ class RunEpisode:
         constants = Constants()
         self.hanabi_environment = rl_env.make(constants.environment_name, players, \
             pyhanabi.AgentObservationType.CARD_KNOWLEDGE)
+        constants.update(self.hanabi_environment)
         self.agents = [BadAgent(self.policy, self.hanabi_environment), \
             BadAgent(self.policy, self.hanabi_environment)]
         self.seo = SetExtraObservation()
@@ -61,3 +62,8 @@ class RunEpisode:
 
         return RunEpisodeResult(episode_number, episode_reward, self.hanabi_environment, \
             agent_step_times)
+
+
+if __name__ == '__main__':
+    runner = RunEpisode()
+    runner.run()
