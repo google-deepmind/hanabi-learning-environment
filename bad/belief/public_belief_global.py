@@ -22,7 +22,7 @@ class PublicBelief(list):
         observation = hanabi_env['player_observations'][0]
         # Init rem_cards,hint_matrix and hanabi_env due to dubug purpose 
         self.rem_cards = RemaingCards(hanabi_env)
-        self.hint_matrix = HintMatrix(observation, self.rem_cards)
+        self.hint_matrix = HintMatrix(constants, self.rem_cards)
         self.hanabi_env = hanabi_env
         
         #self.num_colors_left = {'B':  10, 'G': 10,'R': 10,'W': 10,'Y': 10}        
